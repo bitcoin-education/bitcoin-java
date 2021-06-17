@@ -18,7 +18,7 @@ public class Bech32Test {
     @MethodSource("convertBitsParameters")
     public void converBitsTest(List<Integer> expectedList, String witnessProgram) {
         byte[] witnessProgramBytes = Hex.decode(witnessProgram);
-        assertArrayEquals(expectedList.toArray(), Bech32.convertBits(witnessProgramBytes).toArray());
+        assertArrayEquals(expectedList.toArray(), Bech32.convertBits(witnessProgramBytes, 8, 5, true).toArray());
     }
 
     @ParameterizedTest
@@ -43,6 +43,14 @@ public class Bech32Test {
     @MethodSource("encodeParameters")
     public void encodeTest(String hrp, int witnessVersion, String witnessProgram, String expectedAddress) {
         assertEquals(expectedAddress, Bech32.encode(hrp, witnessVersion, Hex.decode(witnessProgram)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("encodeParameters")
+    public void decodeTest(String hrp, int witnessVersion, String witnessProgram, String address) {
+        String[] result = Bech32.decode(hrp, address);
+        assertEquals(String.valueOf(witnessVersion), result[0]);
+        assertEquals(witnessProgram, result[1]);
     }
 
     private static Stream<Arguments> convertBitsParameters() {
