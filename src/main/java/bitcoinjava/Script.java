@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.math.BigInteger.valueOf;
+import static java.math.BigInteger.*;
 
 public class Script {
 
@@ -71,7 +71,7 @@ public class Script {
         return stringBuilder.toString();
     }
 
-    private String rawSerializeForSegwitSigHash() {
+    public String rawSerializeForSegwitSigHash() {
         StringBuilder stringBuilder = new StringBuilder();
         commands.forEach(command -> {
             if (command instanceof BigInteger) {
@@ -111,4 +111,7 @@ public class Script {
         return new Script(List.of(valueOf(OpCodes.OP_DUP), valueOf(OpCodes.OP_HASH160), hash160Pubkey, valueOf(OpCodes.OP_EQUALVERIFY), valueOf(OpCodes.OP_CHECKSIG)));
     }
 
+    public static Script p2wpkhScript(String hash160Pubkey) {
+        return new Script(List.of(ZERO, hash160Pubkey));
+    }
 }

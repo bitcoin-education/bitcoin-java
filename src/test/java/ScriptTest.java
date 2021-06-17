@@ -24,4 +24,10 @@ public class ScriptTest {
         Script script = Script.fromByteStream(new ByteArrayInputStream(Hex.decode(scriptPubkey)));
         assertEquals(scriptPubkey, script.serialize());
     }
+
+    @Test
+    public void p2wpkhScript() throws IOException {
+        Script script = Script.p2wpkhScript("751e76e8199196d454941c45d1b3a323f1433bd6");
+        assertEquals("0014751e76e8199196d454941c45d1b3a323f1433bd6", script.rawSerialize());
+    }
 }
