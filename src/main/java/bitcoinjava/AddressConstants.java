@@ -1,3 +1,5 @@
+package bitcoinjava;
+
 public class AddressConstants {
     public static String TESTNET_P2PKH_ADDRESS_PREFIX = "6f";
     public static String MAINNET_P2PKH_ADDRESS_PREFIX = "00";

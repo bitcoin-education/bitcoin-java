@@ -1,4 +1,4 @@
-import org.bouncycastle.util.encoders.Hex;
+package bitcoinjava;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

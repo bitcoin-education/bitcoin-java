@@ -1,3 +1,5 @@
+package bitcoinjava;
+
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
@@ -49,7 +51,7 @@ public class Signature {
 
     @Override
     public String toString() {
-        return "Signature{" +
+        return "src.Signature{" +
             "r=" + r +
             ", s=" + s +
             '}';

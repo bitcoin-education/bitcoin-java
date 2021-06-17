@@ -1,3 +1,5 @@
+package bitcoinjava;
+
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -45,7 +47,7 @@ public class FieldElement {
 
     @Override
     public String toString() {
-        return "FieldElement{" +
+        return "src.FieldElement{" +
             "number=" + number +
             ", prime=" + prime +
             '}';

@@ -1,5 +1,6 @@
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
+import bitcoinjava.Script;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

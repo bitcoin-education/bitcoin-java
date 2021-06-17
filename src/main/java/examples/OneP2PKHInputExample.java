@@ -1,3 +1,6 @@
+package examples;
+
+import bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -8,8 +11,9 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class OneP2PKHInputExample {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
+
         Security.addProvider(new BouncyCastleProvider());
 //        String random = UUID.randomUUID().toString().replace("-", "");
         String random = "5334f82fbef04a08b8f9deee4c8dc5c6";

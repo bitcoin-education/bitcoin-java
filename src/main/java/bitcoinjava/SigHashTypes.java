@@ -1,3 +1,5 @@
+package bitcoinjava;
+
 import java.math.BigInteger;
 
 public class SigHashTypes {

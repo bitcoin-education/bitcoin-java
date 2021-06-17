@@ -2,6 +2,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import bitcoinjava.PrivateKey;
+import bitcoinjava.Transaction;
+import bitcoinjava.TransactionECDSASigner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -1,3 +1,5 @@
+package bitcoinjava;
+
 public class OpCodes {
     public static final int OP_0 = 0;
     public static final int OP_FALSE = 0;

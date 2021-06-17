@@ -1,3 +1,5 @@
+package bitcoinjava;
+
 import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 

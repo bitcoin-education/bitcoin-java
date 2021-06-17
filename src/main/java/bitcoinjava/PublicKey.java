@@ -1,3 +1,5 @@
+package bitcoinjava;
+
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.encoders.Hex;
 

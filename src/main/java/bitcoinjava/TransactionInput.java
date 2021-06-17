@@ -1,9 +1,8 @@
-import org.bouncycastle.util.encoders.Hex;
+package bitcoinjava;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionInput {
