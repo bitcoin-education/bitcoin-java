@@ -1,2 +1,2 @@
-# bitcoinjava-java
-A bitcoinjava library written in Java
+# bitcoin-java
+A bitcoin library written in Java
