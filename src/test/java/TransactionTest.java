@@ -108,6 +108,13 @@ public class TransactionTest {
     }
 
     @Test
+    public void serializeSegwit2() throws IOException {
+        String txHex = "02000000000101a7d259daff3c5ab82bf79b183ca82b1c30d5803ba238f87cde51b4b4b2d3eee10100000000ffffffff02204e000000000000160014b92e162808d34111cbccfb60ff200df058e4ac415911000000000000160014699e2580a45a56c0916aaceab1fcc41c0d30e4080247304402202aff7cb99e8bda7980a814b8347d48e441844f20548047fb3f348fdf0cf0ee4e02206f0e50e3443f8a9364ebef6412c7e6ad8fff895e7cf1a3f0332b8d7d93053b310121026298c137dd1e07f0ba5fc1f74af934fabea5415e9c2632b4cc100abbdf080d4000000000";
+        Transaction transaction = Transaction.fromByteStream(new ByteArrayInputStream(Hex.decode(txHex)));
+        assertEquals(txHex, transaction.serialize());
+    }
+
+    @Test
     public void sigHash() throws IOException, NoSuchAlgorithmException {
         String txHex = "0100000001813f79011acb80925dfe69b3def355fe914bd1d96a3f5f71bf8303c6a989c7d1000000006b483045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed01210349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278afeffffff02a135ef01000000001976a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac99c39800000000001976a9141c4bc762dd5423e332166702cb75f40df79fea1288ac19430600";
         String scriptPubkeyHex = "1976a914a802fc56c704ce87c42d7c92eb75e7896bdc41ae88ac";

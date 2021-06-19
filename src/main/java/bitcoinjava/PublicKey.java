@@ -47,6 +47,11 @@ public class PublicKey {
         return concat(prefix, hash160);
     }
 
+    public String segwitAddressFromCompressedPublicKey(String prefix) throws NoSuchAlgorithmException {
+        byte[] hash160 = Hash160.hash(compressedPublicKey);
+        return Bech32.encode(prefix, 0, hash160);
+    }
+
     private String concat(String prefix, byte[] hash160) throws NoSuchAlgorithmException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.writeBytes(Hex.decodeStrict(prefix));
