@@ -18,7 +18,7 @@ public class OneP2PKHInputExampleTransaction {
         String secret = "f2148bbebe0c4f2ba91265f323fef7e2";
         System.out.println("private key for p2pkh input: " + secret);
         PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decode(secret)));
-        System.out.println("address for p2wpkh input: " + privateKey.getPublicKey().addressFromCompressedPublicKey(AddressConstants.TESTNET_P2PKH_ADDRESS_PREFIX));
+        System.out.println("address for p2pkh input: " + privateKey.getPublicKey().addressFromCompressedPublicKey(AddressConstants.TESTNET_P2PKH_ADDRESS_PREFIX));
 
         String id = "2c4024b2e29507e1ad595ef890b9c640d3e37de0ce04625e5c25ccb99624790d";
         TransactionInput transactionInput = new TransactionInput(
