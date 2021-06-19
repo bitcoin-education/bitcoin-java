@@ -1,9 +1,11 @@
+import bitcoinjava.Base58;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 import bitcoinjava.Script;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,8 +28,16 @@ public class ScriptTest {
     }
 
     @Test
-    public void p2wpkhScript() throws IOException {
+    public void p2wpkhScript() {
         Script script = Script.p2wpkhScript("751e76e8199196d454941c45d1b3a323f1433bd6");
         assertEquals("0014751e76e8199196d454941c45d1b3a323f1433bd6", script.rawSerialize());
+    }
+
+    @Test
+    public void p2shScript() throws NoSuchAlgorithmException {
+        String address = "3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC";
+        String h160 = Base58.decodeWithChecksumToHex(address);
+        Script script = Script.p2shScript(h160);
+        assertEquals("a914f815b036d9bbbce5e9f2a00abd1bf3dc91e9551087", script.rawSerialize());
     }
 }

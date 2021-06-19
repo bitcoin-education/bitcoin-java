@@ -114,4 +114,9 @@ public class Script {
     public static Script p2wpkhScript(String hash160Pubkey) {
         return new Script(List.of(ZERO, hash160Pubkey));
     }
+
+    public static Script p2shScript(String hash160) {
+        return new Script(List.of(valueOf(OpCodes.OP_HASH160), hash160, valueOf(OpCodes.OP_EQUAL)));
+    }
+
 }
