@@ -3,8 +3,10 @@ package bitcoinjava;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,6 +107,13 @@ public class Script {
 
     public List<Object> getCommands() {
         return commands;
+    }
+
+    public String p2shAddress(String prefix) throws NoSuchAlgorithmException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byteArrayOutputStream.writeBytes(Hex.decodeStrict(prefix));
+        byteArrayOutputStream.writeBytes(Hex.decode(Hash160.hashToHex(Hex.decode(rawSerialize()))));
+        return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
     }
 
     public static Script p2pkhScript(String hash160Pubkey) {

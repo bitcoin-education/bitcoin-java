@@ -1,4 +1,7 @@
+import bitcoinjava.AddressConstants;
 import bitcoinjava.Base58;
+import bitcoinjava.Hash160;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 import bitcoinjava.Script;
@@ -6,7 +9,12 @@ import bitcoinjava.Script;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.List;
 
+import static bitcoinjava.OpCodes.OP_2;
+import static bitcoinjava.OpCodes.OP_CHECKMULTISIG;
+import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ScriptTest {
@@ -28,6 +36,24 @@ public class ScriptTest {
     }
 
     @Test
+    public void rawSerialize() {
+        String pubkey1 = "022626e955ea6ea6d98850c994f9107b036b1334f18ca8830bfff1295d21cfdb70";
+        String pubkey2 = "03b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb71";
+        String expectedResult = "5221022626e955ea6ea6d98850c994f9107b036b1334f18ca8830bfff1295d21cfdb702103b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb7152ae";
+        Script script = new Script(List.of(valueOf(OP_2), pubkey1, pubkey2, valueOf(OP_2), valueOf(OP_CHECKMULTISIG)));
+        assertEquals(expectedResult, script.rawSerialize());
+    }
+
+    @Test
+    public void p2shAddress() throws NoSuchAlgorithmException {
+        Security.addProvider(new BouncyCastleProvider());
+        String pubkey1 = "022626e955ea6ea6d98850c994f9107b036b1334f18ca8830bfff1295d21cfdb70";
+        String pubkey2 = "03b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb71";
+        Script redeemScript = new Script(List.of(valueOf(OP_2), pubkey1, pubkey2, valueOf(OP_2), valueOf(OP_CHECKMULTISIG)));
+        assertEquals("3CLoMMyuoDQTPRD3XYZtCvgvkadrAdvdXh", redeemScript.p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX));
+    }
+
+    @Test
     public void p2wpkhScript() {
         Script script = Script.p2wpkhScript("751e76e8199196d454941c45d1b3a323f1433bd6");
         assertEquals("0014751e76e8199196d454941c45d1b3a323f1433bd6", script.rawSerialize());
@@ -40,4 +66,5 @@ public class ScriptTest {
         Script script = Script.p2shScript(h160);
         assertEquals("a914f815b036d9bbbce5e9f2a00abd1bf3dc91e9551087", script.rawSerialize());
     }
+
 }

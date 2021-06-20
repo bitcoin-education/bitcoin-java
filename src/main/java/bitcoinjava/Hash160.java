@@ -15,4 +15,5 @@ public class Hash160 {
     public static String hashToHex(byte[] key) throws NoSuchAlgorithmException {
         return Hex.toHexString(hash(key));
     }
+
 }
