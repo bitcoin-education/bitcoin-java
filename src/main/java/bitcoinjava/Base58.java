@@ -45,6 +45,20 @@ public class Base58 {
         return encode(byteArrayOutputStream.toByteArray());
     }
 
+    public static byte[] decodeWif(String wif, boolean compressed) {
+        BigInteger number = ZERO;
+        for (Character c : wif.toCharArray()) {
+            number = number.multiply(valueOf(58));
+            number = number.add(valueOf(BASE58_ALPHABET.chars().mapToObj(ch -> (char) ch).collect(Collectors.toList()).indexOf(c)));
+        }
+        int length = 37;
+        if (compressed) {
+            length++;
+        }
+        byte[] combined = BigIntegers.asUnsignedByteArray(length, number);
+        return copyOfRange(combined, 1, 33);
+    }
+
     public static byte[] decodeWithChecksum(String key) throws NoSuchAlgorithmException {
         BigInteger number = ZERO;
         for (Character c : key.toCharArray()) {

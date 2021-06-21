@@ -3,7 +3,12 @@ package bitcoinjava;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+
+import static bitcoinjava.OpCodes.OP_0;
+import static java.math.BigInteger.valueOf;
+import static java.util.Objects.isNull;
 
 public class TransactionInput {
     private final String previousTransactionId;
@@ -62,6 +67,14 @@ public class TransactionInput {
 
     public void setScriptSig(Script scriptSig) {
         this.scriptSig = scriptSig;
+    }
+
+    public void appendToP2SHScriptSig(Object command) {
+        if (isNull(scriptSig) || scriptSig.getCommands().size() == 0) {
+            scriptSig = new Script(new ArrayList<>());
+            scriptSig.appendCommand(valueOf(OP_0));
+        }
+        scriptSig.appendCommand(command);
     }
 
     public Witness getWitness() {

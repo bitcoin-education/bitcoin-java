@@ -3,10 +3,14 @@ import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import bitcoinjava.PrivateKey;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -123,4 +127,33 @@ public class PrivateKeyTest {
             privateKey.wif("80", true)
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("testFromWifParameters")
+    public void testFromWif(String wif, boolean compressed) throws NoSuchAlgorithmException {
+        PrivateKey privateKey = PrivateKey.fromWif(wif, compressed);
+        assertEquals(wif, privateKey.wif("80", compressed));
+    }
+
+    private static Stream<Arguments> testFromWifParameters() {
+        return Stream.of(
+            Arguments.of(
+                "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgiuQJv1h8Ytr2S53a",
+                true
+            ),
+            Arguments.of(
+                "5JaTXbAUmfPYZFRwrYaALK48fN6sFJp4rHqq2QSXs8ucfpE4yQU",
+                false
+            ),
+            Arguments.of(
+                "5Jb7fCeh1Wtm4yBBg3q3XbT6B525i17kVhy3vMC9AqfR6FH2qGk",
+                false
+            ),
+            Arguments.of(
+                "5JFjmGo5Fww9p8gvx48qBYDJNAzR9pmH5S389axMtDyPT8ddqmw",
+                false
+            )
+        );
+    }
+
 }

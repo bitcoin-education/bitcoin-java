@@ -12,8 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.List;
 
-import static bitcoinjava.OpCodes.OP_2;
-import static bitcoinjava.OpCodes.OP_CHECKMULTISIG;
+import static bitcoinjava.OpCodes.*;
 import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -65,6 +64,19 @@ public class ScriptTest {
         String h160 = Base58.decodeWithChecksumToHex(address);
         Script script = Script.p2shScript(h160);
         assertEquals("a914f815b036d9bbbce5e9f2a00abd1bf3dc91e9551087", script.rawSerialize());
+    }
+
+    @Test
+    public void p2shScript2() throws NoSuchAlgorithmException {
+        Script redeemScript = new Script(List.of(
+            valueOf(OP_2),
+            "0491bba2510912a5bd37da1fb5b1673010e43d2c6d812c514e91bfa9f2eb129e1c183329db55bd868e209aac2fbc02cb33d98fe74bf23f0c235d6126b1d8334f86",
+            "04865c40293a680cb9c020e7b1e106d8c1916d3cef99aa431a56d253e69256dac09ef122b1a986818a7cb624532f062c1d1f8722084861c5c3291ccffef4ec6874",
+            "048d2455d2403e08708fc1f556002f1b6cd83f992d085097f9974ab08a28838f07896fbab08f39495e15fa6fad6edbfb1e754e35fa1c7844c41f322a1863d46213",
+            valueOf(OP_3),
+            valueOf(OP_CHECKMULTISIG))
+        );
+        assertEquals("3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC", redeemScript.p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX));
     }
 
 }

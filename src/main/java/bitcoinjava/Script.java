@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.math.BigInteger.*;
@@ -125,7 +126,10 @@ public class Script {
     }
 
     public static Script p2shScript(String hash160) {
-        return new Script(List.of(valueOf(OpCodes.OP_HASH160), hash160, valueOf(OpCodes.OP_EQUAL)));
+        return new Script(Arrays.asList(valueOf(OpCodes.OP_HASH160), hash160, valueOf(OpCodes.OP_EQUAL)));
     }
 
+    public void appendCommand(Object command) {
+        commands.add(command);
+    }
 }

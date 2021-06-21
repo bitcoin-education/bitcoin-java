@@ -17,6 +17,11 @@ public class PrivateKey {
         this.publicKey = new PublicKey(SecP256K1Constants.G.multiply(secret).normalize());
     }
 
+    public static PrivateKey fromWif(String wif, boolean compressed) {
+        byte[] bytes = Base58.decodeWif(wif, compressed);
+        return new PrivateKey(BigIntegers.fromUnsignedByteArray(bytes));
+    }
+
     public BigInteger getSecret() {
         return secret;
     }
