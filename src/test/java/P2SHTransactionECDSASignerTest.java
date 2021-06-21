@@ -2,6 +2,7 @@ import bitcoinjava.*;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -58,5 +59,56 @@ public class P2SHTransactionECDSASignerTest {
             transaction.serialize()
         );
 
+    }
+
+    @Test
+    public void testFromParsedTransaction() throws IOException, NoSuchAlgorithmException {
+        String txHex = "0100000001e3fa96238b5e17c5092cf6be70379472bbaf2f1f47312a0e0a23f90ddc243b090000000000ffffffff0180bb000000000000160014d446c3bd5edcef015b697a680b1af6a9c655e09600000000";
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Hex.decode(txHex));
+        Transaction transaction = Transaction.fromByteStream(byteArrayInputStream);
+
+        String secret = "f06812134dcf4ce5bb0dabd7718b1528";
+        PrivateKey privateKey1 = new PrivateKey(new BigInteger(1, Hex.decode(secret)));
+        String secret2 = "ad7abc3d183d499392cc43a12561c924";
+        PrivateKey privateKey2 = new PrivateKey(new BigInteger(1, Hex.decode(secret2)));
+
+        Script redeemScript = new Script(List.of(
+            valueOf(OP_2),
+            privateKey1.getPublicKey().compressedPublicKeyHex(),
+            privateKey2.getPublicKey().compressedPublicKeyHex(),
+            valueOf(OP_2), valueOf(OP_CHECKMULTISIG)
+        ));
+
+        P2SHTransactionECDSASigner.partialSign(transaction, privateKey1, 0, redeemScript);
+        P2SHTransactionECDSASigner.partialSign(transaction, privateKey2, 0, redeemScript);
+        P2SHTransactionECDSASigner.appendRedeemScript(transaction,  0, redeemScript);
+
+        String expectedSignedTransaction = "0100000001e3fa96238b5e17c5092cf6be70379472bbaf2f1f47312a0e0a23f90ddc243b0900000000da00473044022007de61705591da6a052eb0f8d81c6aaa7f6f9e3221f02888385a97dddfec54a702201890610422899a7256bd152ed3587c1905ba84bd3e91a9babd31be2d311fb9d001483045022100bec53fff656f7a7f5c37c88cb520d3bfd20ad9ec91b39a11bbee820dbda2fa1302205a31a2599fadeb456f08990373364e7bf18be303ad36a42a7b4c3df6f19e3bcd0147522103180f6fd4ef4f0af7031d26112c58cd5d9afb6ced783c51dc10f4ec5ef16345322102f80764440872c6d3e7cd81e41082ac53d2c8e4beb5b6dc8f98584024f75eb8f552aeffffffff0180bb000000000000160014d446c3bd5edcef015b697a680b1af6a9c655e09600000000";
+        assertEquals(expectedSignedTransaction, transaction.serialize());
+    }
+
+    @Test
+    public void testFromParsedPartiallySignedTransaction() throws IOException, NoSuchAlgorithmException {
+        String txHex = "0100000001e3fa96238b5e17c5092cf6be70379472bbaf2f1f47312a0e0a23f90ddc243b09000000004900473044022007de61705591da6a052eb0f8d81c6aaa7f6f9e3221f02888385a97dddfec54a702201890610422899a7256bd152ed3587c1905ba84bd3e91a9babd31be2d311fb9d001ffffffff0180bb000000000000160014d446c3bd5edcef015b697a680b1af6a9c655e09600000000";
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Hex.decode(txHex));
+        Transaction transaction = Transaction.fromByteStream(byteArrayInputStream);
+
+        String secret = "f06812134dcf4ce5bb0dabd7718b1528";
+        PrivateKey privateKey1 = new PrivateKey(new BigInteger(1, Hex.decode(secret)));
+        String secret2 = "ad7abc3d183d499392cc43a12561c924";
+        PrivateKey privateKey2 = new PrivateKey(new BigInteger(1, Hex.decode(secret2)));
+
+        Script redeemScript = new Script(List.of(
+            valueOf(OP_2),
+            privateKey1.getPublicKey().compressedPublicKeyHex(),
+            privateKey2.getPublicKey().compressedPublicKeyHex(),
+            valueOf(OP_2), valueOf(OP_CHECKMULTISIG)
+        ));
+
+        P2SHTransactionECDSASigner.partialSign(transaction, privateKey2, 0, redeemScript);
+        P2SHTransactionECDSASigner.appendRedeemScript(transaction,  0, redeemScript);
+
+        String expectedSignedTransaction = "0100000001e3fa96238b5e17c5092cf6be70379472bbaf2f1f47312a0e0a23f90ddc243b0900000000da00473044022007de61705591da6a052eb0f8d81c6aaa7f6f9e3221f02888385a97dddfec54a702201890610422899a7256bd152ed3587c1905ba84bd3e91a9babd31be2d311fb9d001483045022100bec53fff656f7a7f5c37c88cb520d3bfd20ad9ec91b39a11bbee820dbda2fa1302205a31a2599fadeb456f08990373364e7bf18be303ad36a42a7b4c3df6f19e3bcd0147522103180f6fd4ef4f0af7031d26112c58cd5d9afb6ced783c51dc10f4ec5ef16345322102f80764440872c6d3e7cd81e41082ac53d2c8e4beb5b6dc8f98584024f75eb8f552aeffffffff0180bb000000000000160014d446c3bd5edcef015b697a680b1af6a9c655e09600000000";
+        assertEquals(expectedSignedTransaction, transaction.serialize());
     }
 }
