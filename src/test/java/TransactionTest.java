@@ -1,4 +1,5 @@
 import bitcoinjava.*;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -169,6 +171,19 @@ public class TransactionTest {
         Transaction transaction = Transaction.fromByteStream(new ByteArrayInputStream(Hex.decode(txHex)));
         String expectedSighash = "27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6";
         assertEquals(expectedSighash, transaction.sigHash(0, Script.fromByteStream(new ByteArrayInputStream(Hex.decode(scriptPubkeyHex)))));
+    }
+
+    @Test
+    public void sigHashNestedSegwit() throws IOException, NoSuchAlgorithmException {
+        Security.addProvider(new BouncyCastleProvider());
+
+        String txHex = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
+        Transaction transaction = Transaction.fromByteStream(new ByteArrayInputStream(Hex.decode(txHex)));
+        PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decode("eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf")));
+        Script redeemScript = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey()));
+        String sigHash = transaction.sigHashSegwit(0, Script.p2pkhScript("14".concat((String) redeemScript.getCommands().get(1))), valueOf(1_000_000_000L));
+        String expectedSigHash = "64f3b0f4dd2bb3aa1ce8566d220cc74dda9df97d8490cc81d89d735c92e59fb6";
+        assertEquals(expectedSigHash, sigHash);
     }
 
     @Test

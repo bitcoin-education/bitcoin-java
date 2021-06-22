@@ -1,10 +1,7 @@
-import bitcoinjava.AddressConstants;
-import bitcoinjava.Base58;
-import bitcoinjava.Hash160;
+import bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
-import bitcoinjava.Script;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -50,6 +47,13 @@ public class ScriptTest {
         String pubkey2 = "03b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb71";
         Script redeemScript = new Script(List.of(valueOf(OP_2), pubkey1, pubkey2, valueOf(OP_2), valueOf(OP_CHECKMULTISIG)));
         assertEquals("3CLoMMyuoDQTPRD3XYZtCvgvkadrAdvdXh", redeemScript.p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX));
+    }
+
+    @Test
+    public void p2shP2wpkhAddress() throws NoSuchAlgorithmException {
+        PrivateKey privateKey = PrivateKey.fromWif("L46JDUzM92EhyG3eeTbczaDzph1S6yANmRDeBKVaWa2vH1h77z4e", true);
+        String address = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey())).p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX);
+        assertEquals("3Ko5pX4ZcqtCXPqJB1FsC821SWt3C4Msoo", address);
     }
 
     @Test
