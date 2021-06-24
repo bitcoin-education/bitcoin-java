@@ -38,10 +38,6 @@ public class Bech32 {
         return list;
     }
 
-    public static List<Integer> convertBits(byte[] key, int fromBits, int toBits, boolean pad) {
-        return BitsConverter.convertBits(key, fromBits, toBits, pad);
-    }
-
     public static BigInteger polymod(List<Integer> values) {
         BigInteger[] generator = new BigInteger[]{
             new BigInteger(1, Hex.decode("3b6a57b2")),
@@ -71,7 +67,7 @@ public class Bech32 {
     public static String encode(String hrp, int witnessVersion, byte[] witnessProgram) {
         ArrayList<Integer> combinedProgram = new ArrayList<>();
         combinedProgram.add(witnessVersion);
-        combinedProgram.addAll(convertBits(witnessProgram, 8, 5, true));
+        combinedProgram.addAll(BitsConverter.convertBits(witnessProgram, 8, 5, true));
         String result = bech32Encode(hrp, combinedProgram);
         String[] decoded = decode(hrp, result);
         if (isNull(decoded[0]) || isNull(decoded[1])) {
@@ -102,7 +98,7 @@ public class Bech32 {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         data.subList(1, data.size()).forEach(byteArrayOutputStream::write);
 
-        List<Integer> decoded = convertBits(byteArrayOutputStream.toByteArray(), 5, 8, false);
+        List<Integer> decoded = BitsConverter.convertBits(byteArrayOutputStream.toByteArray(), 5, 8, false);
         if (isNull(decoded) || decoded.size() < 2 || decoded.size() > 40) {
             return new String[]{null, null};
         }

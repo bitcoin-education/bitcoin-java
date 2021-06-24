@@ -1,4 +1,5 @@
 import bitcoinjava.MnemonicSeed;
+import bitcoinjava.MnemonicSeedGenerator;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -11,14 +12,15 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MnemonicSeedTest {
+public class MnemonicSeedGeneratorTest {
     @ParameterizedTest
     @MethodSource("mnemonicParameters")
     public void mnemonic(String entropy, String mnemonicSeed, String seed, String xpriv) throws NoSuchAlgorithmException, IOException, URISyntaxException {
         byte[] entropyDecoded = Hex.decode(entropy);
-        String mnemonic = MnemonicSeed.toMnemonic(entropyDecoded);
-        assertEquals(mnemonicSeed, mnemonic);
-        assertEquals(seed, MnemonicSeed.mnemonicToSeedHex(mnemonic, "TREZOR"));
+        MnemonicSeed mnemonic = MnemonicSeedGenerator.fromEntropy(entropyDecoded);
+        assertEquals(mnemonicSeed, mnemonic.getSentence());
+        assertEquals(seed, mnemonic.toSeedHex("TREZOR"));
+        assertEquals(xpriv, mnemonic.toMasterKey("TREZOR", "mainnet").serialize());
     }
 
     private static Stream<Arguments> mnemonicParameters() {
