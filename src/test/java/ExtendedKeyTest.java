@@ -66,6 +66,14 @@ public class ExtendedKeyTest {
             Arguments.of(
                 "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw",
                 masterPrivateKey.ckd(BigInteger.ZERO, false, true, "mainnet")
+            ),
+            Arguments.of(
+                "xprv9wTYmMFdV23N2TdNG573QoEsfRrWKQgWeibmLntzniatZvR9BmLnvSxqu53Kw1UmYPxLgboyZQaXwTCg8MSY3H2EU4pWcQDnRnrVA1xe8fs",
+                masterPrivateKey.ckd("0'/1", true,  "mainnet")
+            ),
+            Arguments.of(
+                "xpub6ASuArnXKPbfEwhqN6e3mwBcDTgzisQN1wXN9BJcM47sSikHjJf3UFHKkNAWbWMiGj7Wf5uMash7SyYq527Hqck2AxYysAA7xmALppuCkwQ",
+                masterPrivateKey.ckd("0'/1", false,  "mainnet")
             )
         );
     }

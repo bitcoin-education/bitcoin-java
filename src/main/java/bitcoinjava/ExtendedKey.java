@@ -114,7 +114,7 @@ public class ExtendedKey {
         rawKey = HMacSha512.hash(chainCode, data.toByteArray());
 
         byte[] childRawKey = ByteUtils.subArray(rawKey, 0, 32);
-        byte[] childChainCode = ByteUtils.subArray(rawKey, 32, key.length);
+        byte[] childChainCode = ByteUtils.subArray(rawKey, 32, rawKey.length);
         byte[] childKey = BigIntegers.asUnsignedByteArray(
             new BigInteger(1, childRawKey).add(new BigInteger(1, keyBytes)).mod(SecP256K1Constants.order)
         );
@@ -129,6 +129,29 @@ public class ExtendedKey {
             actualIndex
         );
 
+    }
+
+    public ExtendedKey ckd(String derivationPath, boolean isPrivate, String environment) throws NoSuchAlgorithmException {
+        String[] indexes = derivationPath.split("/");
+        ExtendedKey extendedKey = this;
+        for (String index : indexes) {
+            if (index.endsWith("'")) {
+                extendedKey = extendedKey.ckd(
+                    new BigInteger(index.replace("'", "")),
+                    true,
+                    true,
+                    environment
+                );
+                continue;
+            }
+            extendedKey = extendedKey.ckd(
+                new BigInteger(index),
+                isPrivate,
+                false,
+                environment
+            );
+        }
+        return extendedKey;
     }
 
     public byte[] getKey() {
