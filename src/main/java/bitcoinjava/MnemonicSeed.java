@@ -9,6 +9,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -50,7 +51,7 @@ public class MnemonicSeed {
             environment,
             0,
             "00000000",
-            0
+           BigInteger.ZERO
         );
     }
 
