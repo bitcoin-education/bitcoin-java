@@ -52,8 +52,19 @@ public class ExtendedKey {
             throw new IllegalArgumentException("Invalid environment, must be testnet or mainnet");
         }
 
+        byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
+        byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        if (!isPrivate) {
+            PrivateKey privateKey = new PrivateKey(new BigInteger(1, keyBytes));
+            byteArrayOutputStream.writeBytes(privateKey.getPublicKey().getCompressedPublicKey());
+        } else {
+            byteArrayOutputStream.writeBytes(keyBytes);
+        }
+        byteArrayOutputStream.writeBytes(chainCode);
+
         return new ExtendedKey(
-            key,
+            byteArrayOutputStream.toByteArray(),
             prefix,
             Hex.toHexString(BigIntegers.asUnsignedByteArray(1, valueOf(depth))),
             fingerprint,
@@ -63,8 +74,15 @@ public class ExtendedKey {
     }
 
     public String serialize() throws NoSuchAlgorithmException {
-        byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
-        byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
+        byte[] keyBytes;
+        byte[] chainCode;
+        if (isPrivate) {
+            keyBytes = ByteUtils.subArray(key, 0, 32);
+            chainCode = ByteUtils.subArray(key, 32, key.length);
+        } else {
+            keyBytes = ByteUtils.subArray(key, 0, 33);
+            chainCode = ByteUtils.subArray(key, 33, key.length);
+        }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.writeBytes(Hex.decode(prefix));
         byteArrayOutputStream.writeBytes(Hex.decode(depth));
@@ -73,42 +91,44 @@ public class ExtendedKey {
         byteArrayOutputStream.writeBytes(chainCode);
         if (isPrivate) {
             byteArrayOutputStream.writeBytes(Hex.decode("00"));
-            byteArrayOutputStream.writeBytes(keyBytes);
-        } else {
-            PrivateKey privateKey = new PrivateKey(new BigInteger(1, keyBytes));
-            byteArrayOutputStream.writeBytes(privateKey.getPublicKey().getCompressedPublicKey());
         }
+        byteArrayOutputStream.writeBytes(keyBytes);
         return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
     }
 
-    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened) throws NoSuchAlgorithmException {
-        byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
+    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) throws NoSuchAlgorithmException {
         byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
+        byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
         BigInteger actualIndex = index;
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        byte[] rawKey;
         if (isHardened) {
             actualIndex = actualIndex.add(new BigInteger("2147483648"));
-            ByteArrayOutputStream data = new ByteArrayOutputStream();
             data.write(0);
             data.writeBytes(keyBytes);
-            data.writeBytes(BigIntegers.asUnsignedByteArray(4, actualIndex));
-            byte[] rawKey = HMacSha512.hash(chainCode, data.toByteArray());
-            byte[] childRawKey = ByteUtils.subArray(rawKey, 0, 32);
-            byte[] childChainCode = ByteUtils.subArray(rawKey, 32, key.length);
-            byte[] childKey = BigIntegers.asUnsignedByteArray(
-                new BigInteger(1, childRawKey).add(new BigInteger(1, keyBytes)).mod(SecP256K1Constants.order)
-            );
+        } else {
             PrivateKey privateKey = new PrivateKey(new BigInteger(1, keyBytes));
-            String childFingerprint = Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey()).substring(0, 8);
-            return ExtendedKey.from(
-                ByteUtils.concatenate(childKey, childChainCode),
-                isPrivate,
-                "mainnet",
-                new BigInteger(depth).add(ONE).longValueExact(),
-                childFingerprint,
-                actualIndex
-            );
+            data.writeBytes(privateKey.getPublicKey().getCompressedPublicKey());
         }
-        return null;
+        data.writeBytes(BigIntegers.asUnsignedByteArray(4, actualIndex));
+        rawKey = HMacSha512.hash(chainCode, data.toByteArray());
+
+        byte[] childRawKey = ByteUtils.subArray(rawKey, 0, 32);
+        byte[] childChainCode = ByteUtils.subArray(rawKey, 32, key.length);
+        byte[] childKey = BigIntegers.asUnsignedByteArray(
+            new BigInteger(1, childRawKey).add(new BigInteger(1, keyBytes)).mod(SecP256K1Constants.order)
+        );
+        PrivateKey privateKey = new PrivateKey(new BigInteger(1, keyBytes));
+        String childFingerprint = Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey()).substring(0, 8);
+        return ExtendedKey.from(
+            ByteUtils.concatenate(childKey, childChainCode),
+            isPrivate,
+            environment,
+            new BigInteger(depth).add(ONE).longValueExact(),
+            childFingerprint,
+            actualIndex
+        );
+
     }
 
     public byte[] getKey() {
