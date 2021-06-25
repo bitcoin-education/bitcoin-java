@@ -20,15 +20,13 @@ public class MnemonicSeedGenerator {
             throw new IllegalArgumentException("Strength not allowed, must be one of: 128, 160, 192, 224 or 256");
         }
         byte[] entropy = randomEntropy(strength / 8);
-        return fromEntropy(entropy);
+        MnemonicSeed mnemonicSeed = fromEntropy(entropy);
+        check(mnemonicSeed);
+        return mnemonicSeed;
     }
 
     public static MnemonicSeed fromEntropy(byte[] entropy) throws NoSuchAlgorithmException, IOException, URISyntaxException {
-        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-        byte[] sha256Entropy = sha256.digest(entropy);
-        int checksumSize = entropy.length * 8 / 32;
-        int checksum = BitsConverter.convertBits(sha256Entropy, 8, checksumSize, true).get(0);
-        checksum <<= 8 - checksumSize;
+        int checksum = getChecksum(entropy);
 
         byte[] combined = ByteUtils.concatenate(entropy, new byte[]{(byte) checksum});
 
@@ -38,6 +36,31 @@ public class MnemonicSeedGenerator {
         List<String> wordlist = Files.readAllLines(Path.of(path));
 
         return new MnemonicSeed(indexes.stream().map(wordlist::get).collect(Collectors.joining(" ")));
+    }
+
+    public static void check(MnemonicSeed mnemonicSeed) throws IOException, URISyntaxException, NoSuchAlgorithmException {
+        assert List.of(12, 15, 18, 21, 24).contains(mnemonicSeed.getSentence().split(" ").length);
+
+        byte[] entropy = mnemonicSeed.toEntropy();
+        int checksum = getChecksum(entropy);
+
+        byte[] combined = ByteUtils.concatenate(entropy, new byte[]{(byte) checksum});
+
+        List<Integer> indexes = BitsConverter.convertBits(combined, 8, 11, false);
+
+        URI path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
+        List<String> wordlist = Files.readAllLines(Path.of(path));
+
+        assert new MnemonicSeed(indexes.stream().map(wordlist::get).collect(Collectors.joining(" "))).getSentence().equals(mnemonicSeed.getSentence());
+    }
+
+    private static int getChecksum(byte[] entropy) throws NoSuchAlgorithmException {
+        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+        byte[] sha256Entropy = sha256.digest(entropy);
+        int checksumSize = entropy.length * 8 / 32;
+        int checksum = BitsConverter.convertBits(sha256Entropy, 8, checksumSize, true).get(0);
+        checksum <<= 8 - checksumSize;
+        return checksum;
     }
 
     private static byte[] randomEntropy(int strength) {

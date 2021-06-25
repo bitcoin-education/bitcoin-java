@@ -4,7 +4,19 @@ import org.bouncycastle.crypto.PBEParametersGenerator;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.util.DigestFactory;
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.bouncycastle.util.encoders.Hex;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MnemonicSeed {
     private final String sentence;
@@ -42,4 +54,19 @@ public class MnemonicSeed {
         );
     }
 
+    public byte[] toEntropy() throws IOException, URISyntaxException {
+        URI path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
+        List<String> wordlist = Files.readAllLines(Path.of(path));
+
+        String[] mnemonicSeedList = sentence.split(" ");
+
+        List<Integer> indexesList = Arrays.stream(mnemonicSeedList).map(wordlist::indexOf).collect(Collectors.toList());
+        List<Integer> indexes = BitsConverter.convertBits(indexesList, 11, 8, true);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        indexes.forEach(byteArrayOutputStream::write);
+        byte[] combined = byteArrayOutputStream.toByteArray();
+
+        return ByteUtils.subArray(combined, 0, combined.length - 1);
+    }
 }

@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MnemonicSeedGeneratorTest {
@@ -21,6 +22,40 @@ public class MnemonicSeedGeneratorTest {
         assertEquals(mnemonicSeed, mnemonic.getSentence());
         assertEquals(seed, mnemonic.toSeedHex("TREZOR"));
         assertEquals(xpriv, mnemonic.toMasterKey("TREZOR", "mainnet").serialize());
+        assertArrayEquals(entropyDecoded, mnemonic.toEntropy());
+        MnemonicSeedGenerator.check(mnemonic);
+    }
+
+    @ParameterizedTest
+    @MethodSource("generateRandomParameters")
+    public void generateRandom(int bits, int expectedLength) throws NoSuchAlgorithmException, IOException, URISyntaxException {
+        MnemonicSeed mnemonicSeed = MnemonicSeedGenerator.generateRandom(bits);
+        assertEquals(expectedLength, mnemonicSeed.getSentence().split(" ").length);
+    }
+
+    private static Stream<Arguments> generateRandomParameters() {
+        return Stream.of(
+            Arguments.of(
+                128,
+                12
+            ),
+            Arguments.of(
+                160,
+                15
+            ),
+            Arguments.of(
+                192,
+                18
+            ),
+            Arguments.of(
+                224,
+                21
+            ),
+            Arguments.of(
+                256,
+                24
+            )
+        );
     }
 
     private static Stream<Arguments> mnemonicParameters() {
