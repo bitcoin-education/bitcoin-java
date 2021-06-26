@@ -52,13 +52,19 @@ public class ExtendedKey {
             throw new IllegalArgumentException("Invalid environment, must be testnet or mainnet");
         }
 
-        byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
-        byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
+        int keyBytesLength = 32 - (64 - key.length);
+        byte[] keyBytes = ByteUtils.subArray(key, 0, keyBytesLength);
+        byte[] chainCode = ByteUtils.subArray(key, keyBytesLength, key.length);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         if (!isPrivate) {
             PrivateKey privateKey = new PrivateKey(new BigInteger(1, keyBytes));
             byteArrayOutputStream.writeBytes(privateKey.getPublicKey().getCompressedPublicKey());
         } else {
+            int keyLength = keyBytes.length;
+            while (keyLength < 32) {
+                byteArrayOutputStream.write(0);
+                keyLength++;
+            }
             byteArrayOutputStream.writeBytes(keyBytes);
         }
         byteArrayOutputStream.writeBytes(chainCode);
@@ -134,11 +140,16 @@ public class ExtendedKey {
     public ExtendedKey ckd(String derivationPath, boolean isPrivate, String environment) throws NoSuchAlgorithmException {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
-        for (String index : indexes) {
+        for (int i = 0, indexesLength = indexes.length; i < indexesLength; i++) {
+            boolean privateIteration = true;
+            if (i == indexesLength - 1 && !isPrivate) {
+                privateIteration = false;
+            }
+            String index = indexes[i];
             if (index.endsWith("'")) {
                 extendedKey = extendedKey.ckd(
                     new BigInteger(index.replace("'", "")),
-                    true,
+                    privateIteration,
                     true,
                     environment
                 );
@@ -146,7 +157,7 @@ public class ExtendedKey {
             }
             extendedKey = extendedKey.ckd(
                 new BigInteger(index),
-                isPrivate,
+                privateIteration,
                 false,
                 environment
             );

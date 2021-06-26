@@ -32,6 +32,18 @@ public class ExtendedKeyTest {
         assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
     }
 
+    @ParameterizedTest
+    @MethodSource("vector3Parameters")
+    public void vector3(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws NoSuchAlgorithmException {
+        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+    }
+
+    @ParameterizedTest
+    @MethodSource("vector4Parameters")
+    public void vector4(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws NoSuchAlgorithmException {
+        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+    }
+
     private static Stream<Arguments> vector1Parameters() throws NoSuchAlgorithmException {
         byte[] seed = Hex.decode("000102030405060708090a0b0c0d0e0f");
         ExtendedKey masterPrivateKey = ExtendedKey.from(
@@ -74,6 +86,30 @@ public class ExtendedKeyTest {
             Arguments.of(
                 "xpub6ASuArnXKPbfEwhqN6e3mwBcDTgzisQN1wXN9BJcM47sSikHjJf3UFHKkNAWbWMiGj7Wf5uMash7SyYq527Hqck2AxYysAA7xmALppuCkwQ",
                 masterPrivateKey.ckd("0'/1", false,  "mainnet")
+            ),
+            Arguments.of(
+                "xprv9z4pot5VBttmtdRTWfWQmoH1taj2axGVzFqSb8C9xaxKymcFzXBDptWmT7FwuEzG3ryjH4ktypQSAewRiNMjANTtpgP4mLTj34bhnZX7UiM",
+                masterPrivateKey.ckd("0'/1/2'", true,  "mainnet")
+            ),
+            Arguments.of(
+                "xpub6D4BDPcP2GT577Vvch3R8wDkScZWzQzMMUm3PWbmWvVJrZwQY4VUNgqFJPMM3No2dFDFGTsxxpG5uJh7n7epu4trkrX7x7DogT5Uv6fcLW5",
+                masterPrivateKey.ckd("0'/1/2'", false,  "mainnet")
+            ),
+            Arguments.of(
+                "xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334",
+                masterPrivateKey.ckd("0'/1/2'/2", true,  "mainnet")
+            ),
+            Arguments.of(
+                "xpub6FHa3pjLCk84BayeJxFW2SP4XRrFd1JYnxeLeU8EqN3vDfZmbqBqaGJAyiLjTAwm6ZLRQUMv1ZACTj37sR62cfN7fe5JnJ7dh8zL4fiyLHV",
+                masterPrivateKey.ckd("0'/1/2'/2", false,  "mainnet")
+            ),
+            Arguments.of(
+                "xprvA41z7zogVVwxVSgdKUHDy1SKmdb533PjDz7J6N6mV6uS3ze1ai8FHa8kmHScGpWmj4WggLyQjgPie1rFSruoUihUZREPSL39UNdE3BBDu76",
+                masterPrivateKey.ckd("0'/1/2'/2/1000000000", true,  "mainnet")
+            ),
+            Arguments.of(
+                "xpub6H1LXWLaKsWFhvm6RVpEL9P4KfRZSW7abD2ttkWP3SSQvnyA8FSVqNTEcYFgJS2UaFcxupHiYkro49S8yGasTvXEYBVPamhGW6cFJodrTHy",
+                masterPrivateKey.ckd("0'/1/2'/2/1000000000", false,  "mainnet")
             )
         );
     }
@@ -112,6 +148,122 @@ public class ExtendedKeyTest {
             Arguments.of(
                 "xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH",
                 masterPrivateKey.ckd(BigInteger.ZERO, false, false, "mainnet")
+            ),
+            Arguments.of(
+                "xprv9wSp6B7kry3Vj9m1zSnLvN3xH8RdsPP1Mh7fAaR7aRLcQMKTR2vidYEeEg2mUCTAwCd6vnxVrcjfy2kRgVsFawNzmjuHc2YmYRmagcEPdU9",
+                masterPrivateKey.ckd("0/2147483647'", true, "mainnet")
+            ),
+            Arguments.of(
+                "xpub6ASAVgeehLbnwdqV6UKMHVzgqAG8Gr6riv3Fxxpj8ksbH9ebxaEyBLZ85ySDhKiLDBrQSARLq1uNRts8RuJiHjaDMBU4Zn9h8LZNnBC5y4a",
+                masterPrivateKey.ckd("0/2147483647'", false, "mainnet")
+            ),
+            Arguments.of(
+                "xprv9zFnWC6h2cLgpmSA46vutJzBcfJ8yaJGg8cX1e5StJh45BBciYTRXSd25UEPVuesF9yog62tGAQtHjXajPPdbRCHuWS6T8XA2ECKADdw4Ef",
+                masterPrivateKey.ckd("0/2147483647'/1", true, "mainnet")
+            ),
+            Arguments.of(
+                "xpub6DF8uhdarytz3FWdA8TvFSvvAh8dP3283MY7p2V4SeE2wyWmG5mg5EwVvmdMVCQcoNJxGoWaU9DCWh89LojfZ537wTfunKau47EL2dhHKon",
+                masterPrivateKey.ckd("0/2147483647'/1", false, "mainnet")
+            ),
+            Arguments.of(
+                "xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc",
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'", true, "mainnet")
+            ),
+            Arguments.of(
+                "xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL",
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'", false, "mainnet")
+            ),
+            Arguments.of(
+                "xprvA2nrNbFZABcdryreWet9Ea4LvTJcGsqrMzxHx98MMrotbir7yrKCEXw7nadnHM8Dq38EGfSh6dqA9QWTyefMLEcBYJUuekgW4BYPJcr9E7j",
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'/2", true, "mainnet")
+            ),
+            Arguments.of(
+                "xpub6FnCn6nSzZAw5Tw7cgR9bi15UV96gLZhjDstkXXxvCLsUXBGXPdSnLFbdpq8p9HmGsApME5hQTZ3emM2rnY5agb9rXpVGyy3bdW6EEgAtqt",
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'/2", false, "mainnet")
+            )
+        );
+    }
+
+    private static Stream<Arguments> vector3Parameters() throws NoSuchAlgorithmException {
+        byte[] seed = Hex.decode("4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be");
+        ExtendedKey masterPrivateKey = ExtendedKey.from(
+            HMacSha512.hash("Bitcoin seed", seed),
+            true,
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        ExtendedKey masterPubkey = ExtendedKey.from(
+            HMacSha512.hash("Bitcoin seed", seed),
+            false,
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        return Stream.of(
+            Arguments.of(
+                "xprv9s21ZrQH143K25QhxbucbDDuQ4naNntJRi4KUfWT7xo4EKsHt2QJDu7KXp1A3u7Bi1j8ph3EGsZ9Xvz9dGuVrtHHs7pXeTzjuxBrCmmhgC6",
+                masterPrivateKey
+            ),
+            Arguments.of(
+                "xpub661MyMwAqRbcEZVB4dScxMAdx6d4nFc9nvyvH3v4gJL378CSRZiYmhRoP7mBy6gSPSCYk6SzXPTf3ND1cZAceL7SfJ1Z3GC8vBgp2epUt13",
+                masterPubkey
+            ),
+            Arguments.of(
+                "xprv9uPDJpEQgRQfDcW7BkF7eTya6RPxXeJCqCJGHuCJ4GiRVLzkTXBAJMu2qaMWPrS7AANYqdq6vcBcBUdJCVVFceUvJFjaPdGZ2y9WACViL4L",
+                masterPrivateKey.ckd("0'", true, "mainnet")
+            ),
+            Arguments.of(
+                "xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y",
+                masterPrivateKey.ckd("0'", false, "mainnet")
+            )
+        );
+    }
+
+    private static Stream<Arguments> vector4Parameters() throws NoSuchAlgorithmException {
+        byte[] seed = Hex.decode("3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678");
+        ExtendedKey masterPrivateKey = ExtendedKey.from(
+            HMacSha512.hash("Bitcoin seed", seed),
+            true,
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        ExtendedKey masterPubkey = ExtendedKey.from(
+            HMacSha512.hash("Bitcoin seed", seed),
+            false,
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        return Stream.of(
+            Arguments.of(
+                "xprv9s21ZrQH143K48vGoLGRPxgo2JNkJ3J3fqkirQC2zVdk5Dgd5w14S7fRDyHH4dWNHUgkvsvNDCkvAwcSHNAQwhwgNMgZhLtQC63zxwhQmRv",
+                masterPrivateKey
+            ),
+            Arguments.of(
+                "xpub661MyMwAqRbcGczjuMoRm6dXaLDEhW1u34gKenbeYqAix21mdUKJyuyu5F1rzYGVxyL6tmgBUAEPrEz92mBXjByMRiJdba9wpnN37RLLAXa",
+                masterPubkey
+            ),
+            Arguments.of(
+                "xprv9vB7xEWwNp9kh1wQRfCCQMnZUEG21LpbR9NPCNN1dwhiZkjjeGRnaALmPXCX7SgjFTiCTT6bXes17boXtjq3xLpcDjzEuGLQBM5ohqkao9G",
+                masterPrivateKey.ckd("0'", true, "mainnet")
+            ),
+            Arguments.of(
+                "xpub69AUMk3qDBi3uW1sXgjCmVjJ2G6WQoYSnNHyzkmdCHEhSZ4tBok37xfFEqHd2AddP56Tqp4o56AePAgCjYdvpW2PU2jbUPFKsav5ut6Ch1m",
+                masterPrivateKey.ckd("0'", false, "mainnet")
+            ),
+            Arguments.of(
+                "xprv9xJocDuwtYCMNAo3Zw76WENQeAS6WGXQ55RCy7tDJ8oALr4FWkuVoHJeHVAcAqiZLE7Je3vZJHxspZdFHfnBEjHqU5hG1Jaj32dVoS6XLT1",
+                masterPrivateKey.ckd("0'/1'", true, "mainnet")
+            ),
+            Arguments.of(
+                "xpub6BJA1jSqiukeaesWfxe6sNK9CCGaujFFSJLomWHprUL9DePQ4JDkM5d88n49sMGJxrhpjazuXYWdMf17C9T5XnxkopaeS7jGk1GyyVziaMt",
+                masterPrivateKey.ckd("0'/1'", false, "mainnet")
             )
         );
     }
