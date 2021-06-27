@@ -14,7 +14,7 @@ public class PrivateKey {
 
     public PrivateKey(BigInteger secret) {
         this.secret = secret;
-        this.publicKey = new PublicKey(SecP256K1Constants.G.multiply(secret).normalize());
+        this.publicKey = new PublicKey(SecP256K1.G.multiply(secret).normalize());
     }
 
     public static PrivateKey fromWif(String wif, boolean compressed) {

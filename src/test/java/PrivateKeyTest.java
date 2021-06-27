@@ -1,3 +1,4 @@
+import bitcoinjava.PublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,6 +28,10 @@ public class PrivateKeyTest {
         assertEquals(
             "04ffe558e388852f0120e46af2d1b370f85854a8eb0841811ece0e3e03d282d57c315dc72890a4f10a1481c031b03b351b0dc79901ca18a00cf009dbdb157a1d10",
             privateKey.getPublicKey().uncompressedPublicKeyHex()
+        );
+        assertEquals(
+            privateKey.getPublicKey().uncompressedPublicKeyHex(),
+            PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).uncompressedPublicKeyHex()
         );
     }
 
@@ -54,6 +60,10 @@ public class PrivateKeyTest {
             "0357a4f368868a8a6d572991e484e664810ff14c05c0fa023275251151fe0e53d1",
             privateKey.getPublicKey().compressedPublicKeyHex()
         );
+        assertEquals(
+            "0357a4f368868a8a6d572991e484e664810ff14c05c0fa023275251151fe0e53d1",
+            PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).compressedPublicKeyHex()
+        );
     }
 
     @Test
@@ -62,6 +72,10 @@ public class PrivateKeyTest {
         assertEquals(
             "02933ec2d2b111b92737ec12f1c5d20f3233a0ad21cd8b36d0bca7a0cfa5cb8701",
             privateKey.getPublicKey().compressedPublicKeyHex()
+        );
+        assertEquals(
+            "02933ec2d2b111b92737ec12f1c5d20f3233a0ad21cd8b36d0bca7a0cfa5cb8701",
+            PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).compressedPublicKeyHex()
         );
     }
 
@@ -72,6 +86,10 @@ public class PrivateKeyTest {
             "0296be5b1292f6c856b3c5654e886fc13511462059089cdf9c479623bfcbe77690",
             privateKey.getPublicKey().compressedPublicKeyHex()
         );
+        assertEquals(
+            "0296be5b1292f6c856b3c5654e886fc13511462059089cdf9c479623bfcbe77690",
+            PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).compressedPublicKeyHex()
+        );
     }
 
     @Test
@@ -80,6 +98,10 @@ public class PrivateKeyTest {
         assertEquals(
             "mmTPbXQFxboEtNRkwfh6K51jvdtHLxGeMA",
             privateKey.getPublicKey().addressFromUncompressedPublicKey("6f")
+        );
+        assertEquals(
+            privateKey.getPublicKey().compressedPublicKeyHex(),
+            PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).compressedPublicKeyHex()
         );
     }
 
@@ -90,6 +112,10 @@ public class PrivateKeyTest {
             "mopVkxp8UhXqRYbCYJsbeE1h1fiF64jcoH",
             privateKey.getPublicKey().addressFromCompressedPublicKey("6f")
         );
+        assertEquals(
+            privateKey.getPublicKey().compressedPublicKeyHex(),
+            PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).compressedPublicKeyHex()
+        );
     }
 
     @Test
@@ -99,6 +125,26 @@ public class PrivateKeyTest {
             "1F1Pn2y6pDb68E5nYJJeba4TLg2U7B6KF1",
             privateKey.getPublicKey().addressFromCompressedPublicKey("00")
         );
+        assertEquals(
+            privateKey.getPublicKey().compressedPublicKeyHex(),
+            PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).compressedPublicKeyHex()
+        );
+    }
+
+    @Test
+    public void randomFromCompressedKeyTest() {
+        for (int i = 0; i < 100; i++) {
+            String secret = UUID.randomUUID().toString().replace("-", "");
+            PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decode(secret)));
+            assertEquals(
+                privateKey.getPublicKey().compressedPublicKeyHex(),
+                PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).compressedPublicKeyHex()
+            );
+            assertEquals(
+                privateKey.getPublicKey().uncompressedPublicKeyHex(),
+                PublicKey.fromCompressedPublicKey(privateKey.getPublicKey().getCompressedPublicKey()).uncompressedPublicKeyHex()
+            );
+        }
     }
 
     @Test

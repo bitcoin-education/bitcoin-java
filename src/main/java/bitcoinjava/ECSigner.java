@@ -14,12 +14,12 @@ public class ECSigner {
             true,
             new ECPrivateKeyParameters(
                 privateKey.getSecret(),
-                SecP256K1Constants.ecDomainParameters
+                SecP256K1.ecDomainParameters
             )
         );
         BigInteger[] signature = ecdsaSigner.generateSignature(message);
-        if (signature[1].compareTo(SecP256K1Constants.order.divide(BigInteger.TWO)) > 0) {
-            signature[1] = SecP256K1Constants.order.subtract(signature[1]);
+        if (signature[1].compareTo(SecP256K1.order.divide(BigInteger.TWO)) > 0) {
+            signature[1] = SecP256K1.order.subtract(signature[1]);
         }
         return new Signature(signature[0], signature[1]);
     }

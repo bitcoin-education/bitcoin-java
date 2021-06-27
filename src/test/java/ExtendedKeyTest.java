@@ -1,4 +1,6 @@
 import bitcoinjava.ExtendedKey;
+import bitcoinjava.ExtendedPrivateKey;
+import bitcoinjava.ExtendedPubkey;
 import bitcoinjava.HMacSha512;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
@@ -22,41 +24,45 @@ public class ExtendedKeyTest {
 
     @ParameterizedTest
     @MethodSource("vector1Parameters")
-    public void vector1(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws NoSuchAlgorithmException {
-        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+    public void vector1(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("vector2Parameters")
-    public void vector2(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws NoSuchAlgorithmException {
-        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+    public void vector2(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("vector3Parameters")
-    public void vector3(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws NoSuchAlgorithmException {
-        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+    public void vector3(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("vector4Parameters")
-    public void vector4(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws NoSuchAlgorithmException {
-        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+    public void vector4(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
+    }
+
+    @ParameterizedTest
+    @MethodSource("fromPublicKeyParameters")
+    public void fromPublicKey(String expectedSerializedExtendedKey, ExtendedKey extendedPubkey) throws NoSuchAlgorithmException {
+        assertEquals(expectedSerializedExtendedKey, extendedPubkey.serialize());
     }
 
     private static Stream<Arguments> vector1Parameters() throws NoSuchAlgorithmException {
         byte[] seed = Hex.decode("000102030405060708090a0b0c0d0e0f");
-        ExtendedKey masterPrivateKey = ExtendedKey.from(
+        ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
-            true,
             "mainnet",
             0,
             "00000000",
             BigInteger.ZERO
         );
-        ExtendedKey masterPubkey = ExtendedKey.from(
+        ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
-            false,
             "mainnet",
             0,
             "00000000",
@@ -116,17 +122,15 @@ public class ExtendedKeyTest {
 
     private static Stream<Arguments> vector2Parameters() throws NoSuchAlgorithmException {
         byte[] seed = Hex.decode("fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542");
-        ExtendedKey masterPrivateKey = ExtendedKey.from(
+        ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
-            true,
             "mainnet",
             0,
             "00000000",
             BigInteger.ZERO
         );
-        ExtendedKey masterPubkey = ExtendedKey.from(
+        ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
-            false,
             "mainnet",
             0,
             "00000000",
@@ -186,17 +190,15 @@ public class ExtendedKeyTest {
 
     private static Stream<Arguments> vector3Parameters() throws NoSuchAlgorithmException {
         byte[] seed = Hex.decode("4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be");
-        ExtendedKey masterPrivateKey = ExtendedKey.from(
+        ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
-            true,
             "mainnet",
             0,
             "00000000",
             BigInteger.ZERO
         );
-        ExtendedKey masterPubkey = ExtendedKey.from(
+        ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
-            false,
             "mainnet",
             0,
             "00000000",
@@ -224,17 +226,15 @@ public class ExtendedKeyTest {
 
     private static Stream<Arguments> vector4Parameters() throws NoSuchAlgorithmException {
         byte[] seed = Hex.decode("3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678");
-        ExtendedKey masterPrivateKey = ExtendedKey.from(
+        ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
-            true,
             "mainnet",
             0,
             "00000000",
             BigInteger.ZERO
         );
-        ExtendedKey masterPubkey = ExtendedKey.from(
+        ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
-            false,
             "mainnet",
             0,
             "00000000",
@@ -264,6 +264,39 @@ public class ExtendedKeyTest {
             Arguments.of(
                 "xpub6BJA1jSqiukeaesWfxe6sNK9CCGaujFFSJLomWHprUL9DePQ4JDkM5d88n49sMGJxrhpjazuXYWdMf17C9T5XnxkopaeS7jGk1GyyVziaMt",
                 masterPrivateKey.ckd("0'/1'", false, "mainnet")
+            )
+        );
+    }
+
+    private static Stream<Arguments> fromPublicKeyParameters() throws NoSuchAlgorithmException {
+        byte[] seed = Hex.decode("12299dcf3e1a6368bddbaf4dd1cd83552edb6fc2c41ec081d7fe58c9f0aca9fb37d6d3d3cd275f088b484a52a37f5c8781f6d20547744cd525fb9940b7dbdfce");
+        ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
+            HMacSha512.hash("Bitcoin seed", seed),
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        return Stream.of(
+            Arguments.of(
+                "xpub661MyMwAqRbcEqsg3NugDbqxMH7xDg8jaYD5AL1T7JgQADPgvqDVSWZfuAzcG3PCTRc48VU5mMfRzY9KL469j5KVs3iAosht6HueU5CKYNh",
+                masterPubkey
+            ),
+            Arguments.of(
+                "xpub68SSAVjmWkaMdA5HMd4aYszjo3H8Qy6URd69fBBcgCSFt1j8XGWudstUc8ULx8BZDkCnNVJcsbudGGzTnHEUdiYRTKE2G42EyoVDQrexD9G",
+                masterPubkey.ckd(BigInteger.ZERO, false, false, "mainnet")
+            ),
+            Arguments.of(
+                "xpub69qBbjK3W1MYD5Q2KP14t1i1Vn1tWmLzfwccrNV3Zz7e9cV4kU5P5nQGMbJYzyXpyWxciAb1bqRiEPS6C8yfYiouDxK2jB1FuadRh1RcV1J",
+                masterPubkey.ckd("0/1", "mainnet")
+            ),
+            Arguments.of(
+                "xpub6CNQehfrZtL2UrDfB8dR9zZesBXdinqNgJhTWmhRf1Kdnm9KVgnn1rt9mWMXedjt4hMZrK9GVtKnap4w8PUXac77htBdvhqs6CxEHA8qiRu",
+                masterPubkey.ckd("0/1/2", "mainnet")
+            ),
+            Arguments.of(
+                "xpub6G4WGYbpiiraTi2yMb3Lrp2cw1uZ2KkKK1ENzGm8DzZVzHRgya62RyPNHpcHQV76eQeYv5aHiZkgZWR9gHAxBnFaFqhg3NKt3sXeajh63hD",
+                masterPubkey.ckd("0/2147483647/1/2147483646/2", "mainnet")
             )
         );
     }
