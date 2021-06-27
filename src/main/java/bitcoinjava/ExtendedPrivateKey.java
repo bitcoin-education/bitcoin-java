@@ -149,6 +149,12 @@ public class ExtendedPrivateKey implements ExtendedKey {
         return extendedKey;
     }
 
+    @Override
+    public PublicKey toPublicKey() {
+        byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
+        return new PrivateKey(new BigInteger(1, keyBytes)).getPublicKey();
+    }
+
     public byte[] getKey() {
         return key;
     }

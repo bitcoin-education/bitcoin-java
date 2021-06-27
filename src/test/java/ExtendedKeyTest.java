@@ -1,7 +1,4 @@
-import bitcoinjava.ExtendedKey;
-import bitcoinjava.ExtendedPrivateKey;
-import bitcoinjava.ExtendedPubkey;
-import bitcoinjava.HMacSha512;
+import bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeAll;
@@ -50,6 +47,13 @@ public class ExtendedKeyTest {
     @MethodSource("fromPublicKeyParameters")
     public void fromPublicKey(String expectedSerializedExtendedKey, ExtendedKey extendedPubkey) throws NoSuchAlgorithmException {
         assertEquals(expectedSerializedExtendedKey, extendedPubkey.serialize());
+    }
+
+    @ParameterizedTest
+    @MethodSource("addressFromExtendedKeyParameters")
+    public void addressFromExtendedKey(String expectedAddress, ExtendedKey extendedPrivateKey, ExtendedKey extendedPubkey) throws NoSuchAlgorithmException {
+        assertEquals(expectedAddress, extendedPrivateKey.toPublicKey().addressFromCompressedPublicKey(AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX));
+        assertEquals(expectedAddress, extendedPubkey.toPublicKey().addressFromCompressedPublicKey(AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX));
     }
 
     private static Stream<Arguments> vector1Parameters() throws NoSuchAlgorithmException {
@@ -296,6 +300,46 @@ public class ExtendedKeyTest {
             ),
             Arguments.of(
                 "xpub6G4WGYbpiiraTi2yMb3Lrp2cw1uZ2KkKK1ENzGm8DzZVzHRgya62RyPNHpcHQV76eQeYv5aHiZkgZWR9gHAxBnFaFqhg3NKt3sXeajh63hD",
+                masterPubkey.ckd("0/2147483647/1/2147483646/2", "mainnet")
+            )
+        );
+    }
+
+    private static Stream<Arguments> addressFromExtendedKeyParameters() throws NoSuchAlgorithmException {
+        byte[] seed = Hex.decode("12299dcf3e1a6368bddbaf4dd1cd83552edb6fc2c41ec081d7fe58c9f0aca9fb37d6d3d3cd275f088b484a52a37f5c8781f6d20547744cd525fb9940b7dbdfce");
+        ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
+            HMacSha512.hash("Bitcoin seed", seed),
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
+            HMacSha512.hash("Bitcoin seed", seed),
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        return Stream.of(
+            Arguments.of(
+                "1m2u4uBf3cgUEJHVMqCpxuJQHA5wCqvZT",
+                masterPrivateKey.ckd(BigInteger.ZERO, true, false, "mainnet"),
+                masterPubkey.ckd(BigInteger.ZERO, false, false, "mainnet")
+            ),
+            Arguments.of(
+                "19uTRxHTTzCbWqRQZW4RqxgpJ7iwNPFPpg",
+                masterPrivateKey.ckd("0/1", true, "mainnet"),
+                masterPubkey.ckd("0/1", "mainnet")
+            ),
+            Arguments.of(
+                "188e4wxbaLpqQrLPKNGuCfPKUX2W83nCsw",
+                masterPrivateKey.ckd("0/1/2", true, "mainnet"),
+                masterPubkey.ckd("0/1/2", "mainnet")
+            ),
+            Arguments.of(
+                "1DvGW5PGL9jg6q5fFFfmXCQFM41BuDF7rZ",
+                masterPrivateKey.ckd("0/2147483647/1/2147483646/2", true, "mainnet"),
                 masterPubkey.ckd("0/2147483647/1/2147483646/2", "mainnet")
             )
         );

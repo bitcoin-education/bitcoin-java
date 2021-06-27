@@ -144,4 +144,11 @@ public class ExtendedPubkey implements ExtendedKey {
         }
         return extendedKey;
     }
+
+    @Override
+    public PublicKey toPublicKey() {
+        byte[] keyBytes = ByteUtils.subArray(key, 0, 33);
+        return PublicKey.fromCompressedPublicKey(keyBytes);
+    }
+
 }

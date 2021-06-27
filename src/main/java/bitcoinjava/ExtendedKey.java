@@ -7,4 +7,6 @@ public interface ExtendedKey {
     ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) throws NoSuchAlgorithmException;
 
     String serialize() throws NoSuchAlgorithmException;
+
+    PublicKey toPublicKey();
 }
