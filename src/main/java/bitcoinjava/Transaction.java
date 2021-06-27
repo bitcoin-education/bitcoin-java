@@ -5,7 +5,6 @@ import org.bouncycastle.util.encoders.Hex;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
@@ -131,7 +130,7 @@ public class Transaction {
         return stringBuilder.toString();
     }
 
-    public String sigHash(int inputIndex, Script scriptPubkey) throws NoSuchAlgorithmException {
+    public String sigHash(int inputIndex, Script scriptPubkey) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(version, 4));
         stringBuilder.append(VarInt.toHex(BigInteger.valueOf(inputs.size())));
@@ -178,7 +177,7 @@ public class Transaction {
         return Hash256.hashToHex(zRaw);
     }
 
-    public String sigHashSegwit(int inputIndex, Script scriptPubkey, BigInteger amount) throws NoSuchAlgorithmException, IOException {
+    public String sigHashSegwit(int inputIndex, Script scriptPubkey, BigInteger amount) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         TransactionInput transactionInput = inputs.get(inputIndex);
         stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(version, 4));
@@ -198,7 +197,7 @@ public class Transaction {
         return Hash256.hashToHex(zRaw);
     }
 
-    private void hashOutputs() throws IOException, NoSuchAlgorithmException {
+    private void hashOutputs() throws IOException {
         if(isNull(hashOutputs)) {
             StringBuilder allOutputs = new StringBuilder();
             for (TransactionOutput output : outputs) {
@@ -208,7 +207,7 @@ public class Transaction {
         }
     }
 
-    private void hashPrevOutsAndSequences() throws NoSuchAlgorithmException {
+    private void hashPrevOutsAndSequences() {
         if(isNull(hashPrevOuts)) {
             StringBuilder allPrevOuts = new StringBuilder();
             StringBuilder allSequences = new StringBuilder();

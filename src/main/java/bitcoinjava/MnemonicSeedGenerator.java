@@ -11,11 +11,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MnemonicSeedGenerator {
-    public static MnemonicSeed generateRandom(int strength) throws NoSuchAlgorithmException, IOException, URISyntaxException {
+    public static MnemonicSeed generateRandom(int strength) throws IOException, URISyntaxException {
         if (!List.of(128, 160, 192, 224, 256).contains(strength)) {
             throw new IllegalArgumentException("Strength not allowed, must be one of: 128, 160, 192, 224 or 256");
         }
@@ -25,7 +26,7 @@ public class MnemonicSeedGenerator {
         return mnemonicSeed;
     }
 
-    public static MnemonicSeed fromEntropy(byte[] entropy) throws NoSuchAlgorithmException, IOException, URISyntaxException {
+    public static MnemonicSeed fromEntropy(byte[] entropy) throws IOException, URISyntaxException {
         int checksum = getChecksum(entropy);
 
         byte[] combined = ByteUtils.concatenate(entropy, new byte[]{(byte) checksum});
@@ -38,7 +39,7 @@ public class MnemonicSeedGenerator {
         return new MnemonicSeed(indexes.stream().map(wordlist::get).collect(Collectors.joining(" ")));
     }
 
-    public static void check(MnemonicSeed mnemonicSeed) throws IOException, URISyntaxException, NoSuchAlgorithmException {
+    public static void check(MnemonicSeed mnemonicSeed) throws IOException, URISyntaxException {
         assert List.of(12, 15, 18, 21, 24).contains(mnemonicSeed.getSentence().split(" ").length);
 
         byte[] entropy = mnemonicSeed.toEntropy();
@@ -54,8 +55,13 @@ public class MnemonicSeedGenerator {
         assert new MnemonicSeed(indexes.stream().map(wordlist::get).collect(Collectors.joining(" "))).getSentence().equals(mnemonicSeed.getSentence());
     }
 
-    private static int getChecksum(byte[] entropy) throws NoSuchAlgorithmException {
-        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+    private static int getChecksum(byte[] entropy) {
+        MessageDigest sha256 = null;
+        try {
+            sha256 = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchElementException("Algorithm SHA-256 not found. You may need to add BouncyCastleProvider as a security provider in your project.");
+        }
         byte[] sha256Entropy = sha256.digest(entropy);
         int checksumSize = entropy.length * 8 / 32;
         int checksum = BitsConverter.convertBits(sha256Entropy, 8, checksumSize, true).get(0);

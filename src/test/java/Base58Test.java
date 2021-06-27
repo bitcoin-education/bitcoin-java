@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.stream.Stream;
 
@@ -25,7 +24,7 @@ public class Base58Test {
     }
 
     @Test
-    public void decodeTest() throws NoSuchAlgorithmException {
+    public void decodeTest() {
         String hexString = "1PMycacnJaSqwwJqjawXBErnLsZ7RkXUAs";
         String expectedResult = "f54a5851e9372b87810a8e60cdd2e7cfd80b6e31";
         assertEquals(expectedResult, Base58.decodeWithChecksumToHex(hexString));

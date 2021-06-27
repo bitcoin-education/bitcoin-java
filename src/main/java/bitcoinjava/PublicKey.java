@@ -8,7 +8,6 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 
 import static bitcoinjava.SecP256K1.pow;
 import static bitcoinjava.SecP256K1.sqrt;
@@ -65,22 +64,22 @@ public class PublicKey {
         return Hex.toHexString(compressedPublicKey);
     }
 
-    public String addressFromUncompressedPublicKey(String prefix) throws NoSuchAlgorithmException {
+    public String addressFromUncompressedPublicKey(String prefix) {
         byte[] hash160 = Hash160.hash(uncompressedPublicKey);
         return concat(prefix, hash160);
     }
 
-    public String addressFromCompressedPublicKey(String prefix) throws NoSuchAlgorithmException {
+    public String addressFromCompressedPublicKey(String prefix) {
         byte[] hash160 = Hash160.hash(compressedPublicKey);
         return concat(prefix, hash160);
     }
 
-    public String segwitAddressFromCompressedPublicKey(String prefix) throws NoSuchAlgorithmException {
+    public String segwitAddressFromCompressedPublicKey(String prefix) {
         byte[] hash160 = Hash160.hash(compressedPublicKey);
         return Bech32.encode(prefix, 0, hash160);
     }
 
-    private String concat(String prefix, byte[] hash160) throws NoSuchAlgorithmException {
+    private String concat(String prefix, byte[] hash160) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.writeBytes(Hex.decodeStrict(prefix));
         byteArrayOutputStream.writeBytes(hash160);

@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -93,7 +92,7 @@ public class PrivateKeyTest {
     }
 
     @Test
-    public void testUncompressedPublicKeyAddress() throws NoSuchAlgorithmException {
+    public void testUncompressedPublicKeyAddress() {
         PrivateKey privateKey = new PrivateKey(BigInteger.valueOf(5002));
         assertEquals(
             "mmTPbXQFxboEtNRkwfh6K51jvdtHLxGeMA",
@@ -106,7 +105,7 @@ public class PrivateKeyTest {
     }
 
     @Test
-    public void testCompressedPublicKeyAddress() throws NoSuchAlgorithmException {
+    public void testCompressedPublicKeyAddress() {
         PrivateKey privateKey = new PrivateKey(BigInteger.valueOf(2020).pow(5));
         assertEquals(
             "mopVkxp8UhXqRYbCYJsbeE1h1fiF64jcoH",
@@ -119,7 +118,7 @@ public class PrivateKeyTest {
     }
 
     @Test
-    public void testCompressedPublicKeyAddress2() throws NoSuchAlgorithmException {
+    public void testCompressedPublicKeyAddress2() {
         PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decodeStrict("012345deadbeef")));
         assertEquals(
             "1F1Pn2y6pDb68E5nYJJeba4TLg2U7B6KF1",
@@ -148,7 +147,7 @@ public class PrivateKeyTest {
     }
 
     @Test
-    public void testWif1() throws NoSuchAlgorithmException {
+    public void testWif1() {
         PrivateKey privateKey = new PrivateKey(BigInteger.valueOf(5003));
         assertEquals(
             "cMahea7zqjxrtgAbB7LSGbcQUr1uX1ojuat9jZodMN8rFTv2sfUK",
@@ -157,7 +156,7 @@ public class PrivateKeyTest {
     }
 
     @Test
-    public void testWif2() throws NoSuchAlgorithmException {
+    public void testWif2() {
         PrivateKey privateKey = new PrivateKey(BigInteger.valueOf(2021).pow(5));
         assertEquals(
             "91avARGdfge8E4tZfYLoxeJ5sGBdNJQH4kvjpWAxgzczjbCwxic",
@@ -166,7 +165,7 @@ public class PrivateKeyTest {
     }
 
     @Test
-    public void testWif3() throws NoSuchAlgorithmException {
+    public void testWif3() {
         PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decodeStrict("054321deadbeef")));
         assertEquals(
             "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgiuQJv1h8Ytr2S53a",
@@ -176,7 +175,7 @@ public class PrivateKeyTest {
 
     @ParameterizedTest
     @MethodSource("testFromWifParameters")
-    public void testFromWif(String wif, boolean compressed) throws NoSuchAlgorithmException {
+    public void testFromWif(String wif, boolean compressed) {
         PrivateKey privateKey = PrivateKey.fromWif(wif, compressed);
         assertEquals(wif, privateKey.wif("80", compressed));
     }

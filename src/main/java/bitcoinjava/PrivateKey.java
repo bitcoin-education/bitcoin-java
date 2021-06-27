@@ -5,7 +5,6 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 
 public class PrivateKey {
     private final BigInteger secret;
@@ -30,7 +29,7 @@ public class PrivateKey {
         return publicKey;
     }
 
-    public String wif(String prefix, boolean compressed) throws NoSuchAlgorithmException {
+    public String wif(String prefix, boolean compressed) {
         byte[] secretBytes = BigIntegers.asUnsignedByteArray(32, secret);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.writeBytes(Hex.decodeStrict(prefix));

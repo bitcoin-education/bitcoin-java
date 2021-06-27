@@ -6,7 +6,6 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
 import static bitcoinjava.AddressConstants.*;
 
 public class OneP2WPKHInputExampleTransaction {
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
+    public static void main(String[] args) throws IOException {
         Security.addProvider(new BouncyCastleProvider());
 
         String secret = "4b357284216a4262a36cc166018b9302";

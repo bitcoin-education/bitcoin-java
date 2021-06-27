@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class P2SHTransactionECDSASignerTest {
     @Test
-    public void sign() throws IOException, NoSuchAlgorithmException {
+    public void sign() throws IOException {
         String secret = "909f2d6fc6564407b73743b6871b70d9";
         PrivateKey privateKey1 = new PrivateKey(new BigInteger(1, Hex.decode(secret)));
 
@@ -64,7 +63,7 @@ public class P2SHTransactionECDSASignerTest {
     }
 
     @Test
-    public void signNestedSegwit() throws IOException, NoSuchAlgorithmException {
+    public void signNestedSegwit() throws IOException {
         Security.addProvider(new BouncyCastleProvider());
 
         String txHex = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
@@ -79,7 +78,7 @@ public class P2SHTransactionECDSASignerTest {
     }
 
     @Test
-    public void testFromParsedTransaction() throws IOException, NoSuchAlgorithmException {
+    public void testFromParsedTransaction() throws IOException {
         String txHex = "0100000001e3fa96238b5e17c5092cf6be70379472bbaf2f1f47312a0e0a23f90ddc243b090000000000ffffffff0180bb000000000000160014d446c3bd5edcef015b697a680b1af6a9c655e09600000000";
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Hex.decode(txHex));
         Transaction transaction = Transaction.fromByteStream(byteArrayInputStream);
@@ -105,7 +104,7 @@ public class P2SHTransactionECDSASignerTest {
     }
 
     @Test
-    public void testFromParsedPartiallySignedTransaction() throws IOException, NoSuchAlgorithmException {
+    public void testFromParsedPartiallySignedTransaction() throws IOException {
         String txHex = "0100000001e3fa96238b5e17c5092cf6be70379472bbaf2f1f47312a0e0a23f90ddc243b09000000004900473044022007de61705591da6a052eb0f8d81c6aaa7f6f9e3221f02888385a97dddfec54a702201890610422899a7256bd152ed3587c1905ba84bd3e91a9babd31be2d311fb9d001ffffffff0180bb000000000000160014d446c3bd5edcef015b697a680b1af6a9c655e09600000000";
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Hex.decode(txHex));
         Transaction transaction = Transaction.fromByteStream(byteArrayInputStream);

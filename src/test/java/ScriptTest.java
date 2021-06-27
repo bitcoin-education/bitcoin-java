@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class ScriptTest {
     }
 
     @Test
-    public void p2shAddress() throws NoSuchAlgorithmException {
+    public void p2shAddress() {
         Security.addProvider(new BouncyCastleProvider());
         String pubkey1 = "022626e955ea6ea6d98850c994f9107b036b1334f18ca8830bfff1295d21cfdb70";
         String pubkey2 = "03b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb71";
@@ -50,7 +49,7 @@ public class ScriptTest {
     }
 
     @Test
-    public void p2shP2wpkhAddress() throws NoSuchAlgorithmException {
+    public void p2shP2wpkhAddress() {
         PrivateKey privateKey = PrivateKey.fromWif("L46JDUzM92EhyG3eeTbczaDzph1S6yANmRDeBKVaWa2vH1h77z4e", true);
         String address = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey())).p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX);
         assertEquals("3Ko5pX4ZcqtCXPqJB1FsC821SWt3C4Msoo", address);
@@ -63,7 +62,7 @@ public class ScriptTest {
     }
 
     @Test
-    public void p2shScript() throws NoSuchAlgorithmException {
+    public void p2shScript() {
         String address = "3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC";
         String h160 = Base58.decodeWithChecksumToHex(address);
         Script script = Script.p2shScript(h160);
@@ -71,7 +70,7 @@ public class ScriptTest {
     }
 
     @Test
-    public void p2shScript2() throws NoSuchAlgorithmException {
+    public void p2shScript2() {
         Script redeemScript = new Script(List.of(
             valueOf(OP_2),
             "0491bba2510912a5bd37da1fb5b1673010e43d2c6d812c514e91bfa9f2eb129e1c183329db55bd868e209aac2fbc02cb33d98fe74bf23f0c235d6126b1d8334f86",

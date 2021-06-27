@@ -9,7 +9,6 @@ import bitcoinjava.TransactionECDSASigner;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +20,7 @@ public class TransactionECDSASignerTest {
     }
 
     @Test
-    public void sign() throws IOException, NoSuchAlgorithmException {
+    public void sign() throws IOException {
         PrivateKey privateKey = new PrivateKey(BigInteger.valueOf(8675309));
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Hex.decode("010000000199a24308080ab26e6fb65c4eccfadf76749bb5bfa8cb08f291320b3c21e56f0d0d00000000ffffffff02408af701000000001976a914d52ad7ca9b3d096a38e752c2018e6fbc40cdf26f88ac80969800000000001976a914507b27411ccf7f16f10297de6cef3f291623eddf88ac00000000"));
         Transaction transaction = Transaction.fromByteStream(byteArrayInputStream);
@@ -31,7 +30,7 @@ public class TransactionECDSASignerTest {
     }
 
     @Test
-    public void signSegwit() throws IOException, NoSuchAlgorithmException {
+    public void signSegwit() throws IOException {
         PrivateKey privateKey = new PrivateKey(new BigInteger("61246911195951955945444562903070884624662294596119750503704480515277775165366"));
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Hex.decode("02000000000101f906aca439eacb48279bdc3e9d688ccffd708147c0c785c56cc0ea6c5230091d0100000000ffffffff02204e0000000000001976a914344a0f48ca150ec2b903817660b9b68b13a6702688acf06900000000000016001418e945153f5043f929c08d9df8c1d9a1e494acf0024800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021023463977db0bebb55c248e3091cb7e75745177490d3ea19d75999633ddf4cc99900000000"));
         Transaction transaction = Transaction.fromByteStream(byteArrayInputStream);

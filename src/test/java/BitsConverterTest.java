@@ -1,4 +1,3 @@
-import bitcoinjava.Bech32;
 import bitcoinjava.BitsConverter;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.params.ParameterizedTest;

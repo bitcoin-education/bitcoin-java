@@ -10,14 +10,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
-import static bitcoinjava.OpCodes.*;
 import static java.math.BigInteger.ZERO;
 import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -108,7 +104,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void serialize2() throws IOException, NoSuchAlgorithmException {
+    public void serialize2() throws IOException {
         TransactionInput transactionInput = new TransactionInput(
             "d6f72aab8ff86ff6289842a0424319bf2ddba85dc7c52757912297f948286389",
             ZERO,
@@ -129,7 +125,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void serialize3() throws NoSuchAlgorithmException, IOException {
+    public void serialize3() throws IOException {
         TransactionInput transactionInput = new TransactionInput(
             "3c9018e8d5615c306d72397f8f5eef44308c98fb576a88e030c25456b4f3a7ac",
             ZERO,
@@ -165,7 +161,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void sigHash() throws IOException, NoSuchAlgorithmException {
+    public void sigHash() throws IOException {
         String txHex = "0100000001813f79011acb80925dfe69b3def355fe914bd1d96a3f5f71bf8303c6a989c7d1000000006b483045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed01210349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278afeffffff02a135ef01000000001976a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac99c39800000000001976a9141c4bc762dd5423e332166702cb75f40df79fea1288ac19430600";
         String scriptPubkeyHex = "1976a914a802fc56c704ce87c42d7c92eb75e7896bdc41ae88ac";
         Transaction transaction = Transaction.fromByteStream(new ByteArrayInputStream(Hex.decode(txHex)));
@@ -174,7 +170,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void sigHashNestedSegwit() throws IOException, NoSuchAlgorithmException {
+    public void sigHashNestedSegwit() throws IOException {
         Security.addProvider(new BouncyCastleProvider());
 
         String txHex = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
@@ -187,7 +183,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void sigHashSegwit() throws IOException, NoSuchAlgorithmException {
+    public void sigHashSegwit() throws IOException {
         String txHex = "0100000002fff7f7881a8099afa6940d42d1e7f6362bec38171ea3edf433541db4e4ad969f0000000000eeffffffef51e1b804cc89d182d279655c3aa89e815b1b309fe287d9b2b55d57b90ec68a0100000000ffffffff02202cb206000000001976a9148280b37df378db99f66f85c95a783a76ac7a6d5988ac9093510d000000001976a9143bde42dbee7e4dbe6a21b2d50ce2f0167faa815988ac11000000";
         String hash160Pubkey = "141d0f172a0ecb48aee1be1f2687d2963ae33f71a1";
         BigInteger amount = valueOf(600_000_000);

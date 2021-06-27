@@ -7,7 +7,6 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.valueOf;
@@ -81,7 +80,7 @@ public class ExtendedPubkey implements ExtendedKey {
         );
     }
 
-    public String serialize() throws NoSuchAlgorithmException {
+    public String serialize() {
         byte[] keyBytes = ByteUtils.subArray(key, 0, 33);
         byte[] chainCode = ByteUtils.subArray(key, 33, key.length);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -95,7 +94,7 @@ public class ExtendedPubkey implements ExtendedKey {
     }
 
     @Override
-    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) throws NoSuchAlgorithmException {
+    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) {
         if (isHardened) {
             throw new IllegalArgumentException("Cannot derive hardened key from extended pubkey.");
         }
@@ -128,7 +127,7 @@ public class ExtendedPubkey implements ExtendedKey {
         );
     }
 
-    public ExtendedKey ckd(String derivationPath, String environment) throws NoSuchAlgorithmException {
+    public ExtendedKey ckd(String derivationPath, String environment) {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
         for (String index : indexes) {

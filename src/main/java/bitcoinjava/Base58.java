@@ -5,7 +5,6 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ public class Base58 {
         return prefix.concat(result);
     }
 
-    public static String encodeWithChecksum(byte[] key) throws NoSuchAlgorithmException {
+    public static String encodeWithChecksum(byte[] key) {
         byte[] checksum = Hash256.hash(key);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.writeBytes(key);
@@ -59,7 +58,7 @@ public class Base58 {
         return copyOfRange(combined, 1, 33);
     }
 
-    public static byte[] decodeWithChecksum(String key) throws NoSuchAlgorithmException {
+    public static byte[] decodeWithChecksum(String key) {
         BigInteger number = ZERO;
         for (Character c : key.toCharArray()) {
             number = number.multiply(valueOf(58));
@@ -73,11 +72,11 @@ public class Base58 {
         return copyOfRange(combined, 1, 21);
     }
 
-    public static String decodeWithChecksumToHex(String key) throws NoSuchAlgorithmException {
+    public static String decodeWithChecksumToHex(String key) {
         return Hex.toHexString(decodeWithChecksum(key));
     }
 
-    private static boolean isValidAddress(byte[] combined, byte[] checksum) throws NoSuchAlgorithmException {
+    private static boolean isValidAddress(byte[] combined, byte[] checksum) {
         return Arrays.equals(copyOfRange(Hash256.hash(copyOfRange(combined, 0, 21)), 0, 4), checksum);
     }
 

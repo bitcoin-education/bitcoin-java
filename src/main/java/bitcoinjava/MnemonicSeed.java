@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -54,9 +55,19 @@ public class MnemonicSeed {
         );
     }
 
-    public byte[] toEntropy() throws IOException, URISyntaxException {
-        URI path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
-        List<String> wordlist = Files.readAllLines(Path.of(path));
+    public byte[] toEntropy() {
+        URI path = null;
+        try {
+            path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
+        } catch (URISyntaxException e) {
+            throw new NoSuchElementException("Could not load wordlist.");
+        }
+        List<String> wordlist = null;
+        try {
+            wordlist = Files.readAllLines(Path.of(path));
+        } catch (IOException e) {
+            throw new NoSuchElementException("Could not load wordlist.");
+        }
 
         String[] mnemonicSeedList = sentence.split(" ");
 

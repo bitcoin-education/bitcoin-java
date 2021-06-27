@@ -6,7 +6,6 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.math.ec.custom.sec.SecP256K1Curve;
-import org.bouncycastle.pqc.math.linearalgebra.LittleEndianConversions;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

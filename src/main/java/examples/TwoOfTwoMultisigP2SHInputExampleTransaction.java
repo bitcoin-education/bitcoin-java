@@ -6,7 +6,6 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ import static bitcoinjava.OpCodes.*;
 import static java.math.BigInteger.valueOf;
 
 public class TwoOfTwoMultisigP2SHInputExampleTransaction {
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
+    public static void main(String[] args) throws IOException {
         Security.addProvider(new BouncyCastleProvider());
 
         String secret = "f06812134dcf4ce5bb0dabd7718b1528";

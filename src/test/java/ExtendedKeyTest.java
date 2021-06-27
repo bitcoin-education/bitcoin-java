@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.stream.Stream;
 
@@ -21,42 +20,42 @@ public class ExtendedKeyTest {
 
     @ParameterizedTest
     @MethodSource("vector1Parameters")
-    public void vector1(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+    public void vector1(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
         assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("vector2Parameters")
-    public void vector2(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+    public void vector2(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
         assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("vector3Parameters")
-    public void vector3(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+    public void vector3(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
         assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("vector4Parameters")
-    public void vector4(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) throws NoSuchAlgorithmException {
+    public void vector4(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
         assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("fromPublicKeyParameters")
-    public void fromPublicKey(String expectedSerializedExtendedKey, ExtendedKey extendedPubkey) throws NoSuchAlgorithmException {
+    public void fromPublicKey(String expectedSerializedExtendedKey, ExtendedKey extendedPubkey) {
         assertEquals(expectedSerializedExtendedKey, extendedPubkey.serialize());
     }
 
     @ParameterizedTest
     @MethodSource("addressFromExtendedKeyParameters")
-    public void addressFromExtendedKey(String expectedAddress, ExtendedKey extendedPrivateKey, ExtendedKey extendedPubkey) throws NoSuchAlgorithmException {
+    public void addressFromExtendedKey(String expectedAddress, ExtendedKey extendedPrivateKey, ExtendedKey extendedPubkey) {
         assertEquals(expectedAddress, extendedPrivateKey.toPublicKey().addressFromCompressedPublicKey(AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX));
         assertEquals(expectedAddress, extendedPubkey.toPublicKey().addressFromCompressedPublicKey(AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX));
     }
 
-    private static Stream<Arguments> vector1Parameters() throws NoSuchAlgorithmException {
+    private static Stream<Arguments> vector1Parameters() {
         byte[] seed = Hex.decode("000102030405060708090a0b0c0d0e0f");
         ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
@@ -124,7 +123,7 @@ public class ExtendedKeyTest {
         );
     }
 
-    private static Stream<Arguments> vector2Parameters() throws NoSuchAlgorithmException {
+    private static Stream<Arguments> vector2Parameters() {
         byte[] seed = Hex.decode("fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542");
         ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
@@ -192,7 +191,7 @@ public class ExtendedKeyTest {
         );
     }
 
-    private static Stream<Arguments> vector3Parameters() throws NoSuchAlgorithmException {
+    private static Stream<Arguments> vector3Parameters() {
         byte[] seed = Hex.decode("4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be");
         ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
@@ -228,7 +227,7 @@ public class ExtendedKeyTest {
         );
     }
 
-    private static Stream<Arguments> vector4Parameters() throws NoSuchAlgorithmException {
+    private static Stream<Arguments> vector4Parameters() {
         byte[] seed = Hex.decode("3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678");
         ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),
@@ -272,7 +271,7 @@ public class ExtendedKeyTest {
         );
     }
 
-    private static Stream<Arguments> fromPublicKeyParameters() throws NoSuchAlgorithmException {
+    private static Stream<Arguments> fromPublicKeyParameters() {
         byte[] seed = Hex.decode("12299dcf3e1a6368bddbaf4dd1cd83552edb6fc2c41ec081d7fe58c9f0aca9fb37d6d3d3cd275f088b484a52a37f5c8781f6d20547744cd525fb9940b7dbdfce");
         ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
@@ -305,7 +304,7 @@ public class ExtendedKeyTest {
         );
     }
 
-    private static Stream<Arguments> addressFromExtendedKeyParameters() throws NoSuchAlgorithmException {
+    private static Stream<Arguments> addressFromExtendedKeyParameters() {
         byte[] seed = Hex.decode("12299dcf3e1a6368bddbaf4dd1cd83552edb6fc2c41ec081d7fe58c9f0aca9fb37d6d3d3cd275f088b484a52a37f5c8781f6d20547744cd525fb9940b7dbdfce");
         ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", seed),

@@ -6,7 +6,6 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.valueOf;
@@ -65,7 +64,7 @@ public class ExtendedPrivateKey implements ExtendedKey {
     }
 
     @Override
-    public String serialize() throws NoSuchAlgorithmException {
+    public String serialize() {
         byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
         byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -79,7 +78,7 @@ public class ExtendedPrivateKey implements ExtendedKey {
         return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
     }
 
-    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) throws NoSuchAlgorithmException {
+    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) {
         byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
         byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
         BigInteger actualIndex = index;
@@ -121,7 +120,7 @@ public class ExtendedPrivateKey implements ExtendedKey {
         );
     }
 
-    public ExtendedKey ckd(String derivationPath, boolean isPrivate, String environment) throws NoSuchAlgorithmException {
+    public ExtendedKey ckd(String derivationPath, boolean isPrivate, String environment) {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
         for (int i = 0, indexesLength = indexes.length; i < indexesLength; i++) {
