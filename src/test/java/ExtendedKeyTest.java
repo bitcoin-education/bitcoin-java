@@ -55,6 +55,12 @@ public class ExtendedKeyTest {
         assertEquals(expectedAddress, extendedPubkey.toPublicKey().addressFromCompressedPublicKey(AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX));
     }
 
+    @ParameterizedTest
+    @MethodSource("addressFromPrivateKeyParameters")
+    public void addressFromPrivateKey(String expectedAddress, ExtendedKey extendedPrivateKey) {
+        assertEquals(expectedAddress, extendedPrivateKey.toPublicKey().segwitAddressFromCompressedPublicKey(AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX));
+    }
+
     private static Stream<Arguments> vector1Parameters() {
         byte[] seed = Hex.decode("000102030405060708090a0b0c0d0e0f");
         ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
@@ -340,6 +346,35 @@ public class ExtendedKeyTest {
                 "1DvGW5PGL9jg6q5fFFfmXCQFM41BuDF7rZ",
                 masterPrivateKey.ckd("0/2147483647/1/2147483646/2", true, "mainnet"),
                 masterPubkey.ckd("0/2147483647/1/2147483646/2", "mainnet")
+            )
+        );
+    }
+
+    private static Stream<Arguments> addressFromPrivateKeyParameters() {
+        byte[] seed = Hex.decode("4eef6fe96e87e1379863727f2dfce4eb8f49262bf8581bfdc384b7dd6bdccc73a0e0c819807d998cb59a09534df97dfd2b99b8b9c6fd4674de9d42043948656f");
+        ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
+            HMacSha512.hash("Bitcoin seed", seed),
+            "mainnet",
+            0,
+            "00000000",
+            BigInteger.ZERO
+        );
+        return Stream.of(
+            Arguments.of(
+                "bc1qrs4f2jy2h2z4tul0r5pyd3hr6g5wl5ah6xufj6",
+                masterPrivateKey.ckd("84'/0'/0'/0/0", true, "mainnet")
+            ),
+            Arguments.of(
+                "bc1qt2n6s4yxzpqrn4n7mmvafh86xkqed7a7vpjpun",
+                masterPrivateKey.ckd("84'/0'/0'/0/1", true, "mainnet")
+            ),
+            Arguments.of(
+                "bc1qc7d9njfaeawekrjz93ysfle7faay09ngtv2x24",
+                masterPrivateKey.ckd("84'/0'/0'/0/2", true, "mainnet")
+            ),
+            Arguments.of(
+                "bc1q9pv8jf53z732rgpkkng7ggfk0v3r48nymuyxr9",
+                masterPrivateKey.ckd("84'/0'/0'/0/3", true, "mainnet")
             )
         );
     }
