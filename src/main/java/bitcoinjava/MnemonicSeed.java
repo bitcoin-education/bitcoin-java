@@ -48,11 +48,10 @@ public class MnemonicSeed {
     public ExtendedPrivateKey toMasterKey(String passphrase, String environment) {
         return ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", toSeed(passphrase)),
-            environment,
             0,
             "00000000",
-            BigInteger.ZERO
-        );
+            BigInteger.ZERO,
+            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
     }
 
     public byte[] toEntropy() {
