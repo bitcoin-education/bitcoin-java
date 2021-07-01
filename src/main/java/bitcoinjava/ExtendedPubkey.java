@@ -14,6 +14,10 @@ import static java.math.BigInteger.valueOf;
 public class ExtendedPubkey implements ExtendedKey {
     public static final String MAINNET_PUBLIC_PREFIX = "0488B21E";
     public static final String TESTNET_PUBLIC_PREFIX = "043587CF";
+    public static final String MAINNET_PUBLIC_NESTED_SEGWIT_PREFIX = "049D7CB2";
+    public static final String TESTNET_PUBLIC_NESTED_SEGWIT_PREFIX = "044A5262";
+    public static final String MAINNET_PUBLIC_SEGWIT_PREFIX = "04B24746";
+    public static final String TESTNET_PUBLIC_SEGWIT_PREFIX = "045F1CF6";
 
     private final byte[] key;
 
@@ -33,16 +37,7 @@ public class ExtendedPubkey implements ExtendedKey {
         this.childNumber = childNumber;
     }
 
-    public static ExtendedPubkey fromPrivate(byte[] key, String environment, long depth, String fingerprint, BigInteger childNumber) {
-        String prefix;
-        if (environment.equals("mainnet")) {
-            prefix = MAINNET_PUBLIC_PREFIX;
-        } else if (environment.equals("testnet")) {
-            prefix = TESTNET_PUBLIC_PREFIX;
-        } else {
-            throw new IllegalArgumentException("Invalid environment, must be testnet or mainnet");
-        }
-
+    public static ExtendedPubkey fromPrivate(byte[] key, long depth, String fingerprint, BigInteger childNumber, String prefix) {
         int keyBytesLength = 32 - (64 - key.length);
         byte[] keyBytes = ByteUtils.subArray(key, 0, keyBytesLength);
         byte[] chainCode = ByteUtils.subArray(key, keyBytesLength, key.length);
@@ -61,16 +56,7 @@ public class ExtendedPubkey implements ExtendedKey {
         );
     }
 
-    public static ExtendedPubkey fromPublic(byte[] key, String environment, long depth, String fingerprint, BigInteger childNumber) {
-        String prefix;
-        if (environment.equals("mainnet")) {
-            prefix = MAINNET_PUBLIC_PREFIX;
-        } else if (environment.equals("testnet")) {
-            prefix = TESTNET_PUBLIC_PREFIX;
-        } else {
-            throw new IllegalArgumentException("Invalid environment, must be testnet or mainnet");
-        }
-
+    public static ExtendedPubkey fromPublic(byte[] key, long depth, String fingerprint, BigInteger childNumber, String prefix) {
         return new ExtendedPubkey(
             key,
             prefix,
@@ -94,7 +80,7 @@ public class ExtendedPubkey implements ExtendedKey {
     }
 
     @Override
-    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) {
+    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened) {
         if (isHardened) {
             throw new IllegalArgumentException("Cannot derive hardened key from extended pubkey.");
         }
@@ -120,14 +106,13 @@ public class ExtendedPubkey implements ExtendedKey {
         long depth = new BigInteger(this.depth).add(ONE).longValueExact();
         return ExtendedPubkey.fromPublic(
             ByteUtils.concatenate(childKey, childChainCode),
-            environment,
             depth,
             childFingerprint,
-            index
-        );
+            index,
+            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
     }
 
-    public ExtendedKey ckd(String derivationPath, String environment) {
+    public ExtendedKey ckd(String derivationPath) {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
         for (String index : indexes) {
@@ -137,8 +122,7 @@ public class ExtendedPubkey implements ExtendedKey {
             extendedKey = extendedKey.ckd(
                 new BigInteger(index),
                 false,
-                false,
-                environment
+                false
             );
         }
         return extendedKey;

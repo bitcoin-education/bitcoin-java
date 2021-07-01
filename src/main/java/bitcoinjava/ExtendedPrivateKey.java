@@ -13,6 +13,10 @@ import static java.math.BigInteger.valueOf;
 public class ExtendedPrivateKey implements ExtendedKey {
     public static final String MAINNET_PRIVATE_PREFIX = "0488ADE4";
     public static final String TESTNET_PRIVATE_PREFIX = "04358394";
+    public static final String MAINNET_PRIVATE_NESTED_SEGWIT_PREFIX = "049D7878";
+    public static final String TESTNET_PRIVATE_NESTED_SEGWIT_PREFIX = "044A4E28";
+    public static final String MAINNET_PRIVATE_SEGWIT_PREFIX = "04B2430C";
+    public static final String TESTNET_PRIVATE_SEGWIT_PREFIX = "045F18BC";
 
     private final byte[] key;
 
@@ -32,16 +36,7 @@ public class ExtendedPrivateKey implements ExtendedKey {
         this.childNumber = childNumber;
     }
 
-    public static ExtendedPrivateKey from(byte[] key, String environment, long depth, String fingerprint, BigInteger childNumber) {
-        String prefix;
-        if (environment.equals("mainnet")) {
-            prefix = MAINNET_PRIVATE_PREFIX;
-        } else if (environment.equals("testnet")) {
-            prefix = TESTNET_PRIVATE_PREFIX;
-        } else {
-            throw new IllegalArgumentException("Invalid environment, must be testnet or mainnet");
-        }
-
+    public static ExtendedPrivateKey from(byte[] key, long depth, String fingerprint, BigInteger childNumber, String prefix) {
         int keyBytesLength = 32 - (64 - key.length);
         byte[] keyBytes = ByteUtils.subArray(key, 0, keyBytesLength);
         byte[] chainCode = ByteUtils.subArray(key, keyBytesLength, key.length);
@@ -78,7 +73,7 @@ public class ExtendedPrivateKey implements ExtendedKey {
         return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
     }
 
-    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String environment) {
+    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened) {
         byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
         byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
         BigInteger actualIndex = index;
@@ -105,22 +100,20 @@ public class ExtendedPrivateKey implements ExtendedKey {
         if (isPrivate) {
             return ExtendedPrivateKey.from(
                 ByteUtils.concatenate(childKey, childChainCode),
-                environment,
                 depth,
                 childFingerprint,
-                actualIndex
-            );
+                actualIndex,
+                ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
         }
         return ExtendedPubkey.fromPrivate(
             ByteUtils.concatenate(childKey, childChainCode),
-            environment,
             depth,
             childFingerprint,
-            actualIndex
-        );
+            actualIndex,
+            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
     }
 
-    public ExtendedKey ckd(String derivationPath, boolean isPrivate, String environment) {
+    public ExtendedKey ckd(String derivationPath, boolean isPrivate) {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
         for (int i = 0, indexesLength = indexes.length; i < indexesLength; i++) {
@@ -133,16 +126,14 @@ public class ExtendedPrivateKey implements ExtendedKey {
                 extendedKey = extendedKey.ckd(
                     new BigInteger(index.replace("'", "")),
                     privateIteration,
-                    true,
-                    environment
+                    true
                 );
                 continue;
             }
             extendedKey = extendedKey.ckd(
                 new BigInteger(index),
                 privateIteration,
-                false,
-                environment
+                false
             );
         }
         return extendedKey;

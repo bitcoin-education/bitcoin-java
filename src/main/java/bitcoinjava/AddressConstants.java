@@ -7,4 +7,5 @@ public class AddressConstants {
     public static String MAINNET_P2SH_ADDRESS_PREFIX = "05";
     public static String TESTNET_P2WPKH_ADDRESS_PREFIX = "tb";
     public static String MAINNET_P2WPKH_ADDRESS_PREFIX = "bc";
+    public static String REGTEST_P2WPKH_ADDRESS_PREFIX = "bcrt";
 }
