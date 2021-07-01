@@ -177,7 +177,7 @@ public class TransactionTest {
         Transaction transaction = Transaction.fromByteStream(new ByteArrayInputStream(Hex.decode(txHex)));
         PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decode("eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf")));
         Script redeemScript = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey()));
-        String sigHash = transaction.sigHashSegwit(0, Script.p2pkhScript("14".concat((String) redeemScript.getCommands().get(1))), valueOf(1_000_000_000L));
+        String sigHash = transaction.sigHashSegwit(0, Script.p2pkhScript("14".concat((String) redeemScript.getCommands().get(1))).serializeForSegwitSigHash(), valueOf(1_000_000_000L));
         String expectedSigHash = "64f3b0f4dd2bb3aa1ce8566d220cc74dda9df97d8490cc81d89d735c92e59fb6";
         assertEquals(expectedSigHash, sigHash);
     }
@@ -189,7 +189,7 @@ public class TransactionTest {
         BigInteger amount = valueOf(600_000_000);
         Transaction transaction = Transaction.fromByteStream(new ByteArrayInputStream(Hex.decode(txHex)));
         String expectedSighash = "c37af31116d1b27caf68aae9e3ac82f1477929014d5b917657d0eb49478cb670";
-        assertEquals(expectedSighash, transaction.sigHashSegwit(1, Script.p2pkhScript(hash160Pubkey), amount));
+        assertEquals(expectedSighash, transaction.sigHashSegwit(1, Script.p2pkhScript(hash160Pubkey).serializeForSegwitSigHash(), amount));
     }
 
     private static Stream<Arguments> testParameters() {

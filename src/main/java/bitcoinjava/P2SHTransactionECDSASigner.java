@@ -30,7 +30,7 @@ public class P2SHTransactionECDSASigner {
 
     private static String getSigHash(Transaction transaction, int index, Script redeemScript, BigInteger amount, boolean isSegwitInput) throws IOException {
         if (isSegwitInput) {
-            return transaction.sigHashSegwit(index, Script.p2pkhScript(HASH_160_PUBKEY_SIZE_HEX.concat((String) redeemScript.getCommands().get(1))), amount);
+            return transaction.sigHashSegwit(index, Script.p2pkhScript(HASH_160_PUBKEY_SIZE_HEX.concat((String) redeemScript.getCommands().get(1))).serializeForSegwitSigHash(), amount);
         }
         return transaction.sigHash(index, redeemScript);
     }

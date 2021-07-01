@@ -47,4 +47,13 @@ public class Witness {
         });
         return Hex.toHexString(byteArrayOutputStream.toByteArray());
     }
+
+    public void appendItem(Object item) {
+        items.add(item);
+    }
+
+    public List<Object> getItems() {
+        return items;
+    }
+
 }

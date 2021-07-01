@@ -177,7 +177,7 @@ public class Transaction {
         return Hash256.hashToHex(zRaw);
     }
 
-    public String sigHashSegwit(int inputIndex, Script scriptPubkey, BigInteger amount) throws IOException {
+    public String sigHashSegwit(int inputIndex, String serializedScriptPubkey, BigInteger amount) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         TransactionInput transactionInput = inputs.get(inputIndex);
         stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(version, 4));
@@ -186,7 +186,7 @@ public class Transaction {
         stringBuilder.append(hashSequence);
         stringBuilder.append(Bytes.reverseFromHex(transactionInput.getPreviousTransactionId()));
         stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(transactionInput.getPreviousIndex(), 4));
-        stringBuilder.append(scriptPubkey.serializeForSegwitSigHash());
+        stringBuilder.append(serializedScriptPubkey);
         stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(amount, 8));
         stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(transactionInput.getSequence(), 4));
         hashOutputs();

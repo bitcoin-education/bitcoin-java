@@ -23,7 +23,7 @@ public class TransactionECDSASigner {
     private static String getSigHash(Transaction transaction, PrivateKey privateKey, int index, BigInteger amount, boolean isSegwitInput) throws IOException {
         if (isSegwitInput) {
             String hash160Pubkey = getHash160Pubkey(privateKey);
-            return transaction.sigHashSegwit(index, Script.p2pkhScript(HASH_160_PUBKEY_SIZE_HEX.concat(hash160Pubkey)), amount);
+            return transaction.sigHashSegwit(index, Script.p2pkhScript(HASH_160_PUBKEY_SIZE_HEX.concat(hash160Pubkey)).serializeForSegwitSigHash(), amount);
         }
         return transaction.sigHash(index, Script.p2pkhScript(getHash160Pubkey(privateKey)));
     }

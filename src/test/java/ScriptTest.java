@@ -82,4 +82,21 @@ public class ScriptTest {
         assertEquals("3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC", redeemScript.p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX));
     }
 
+    @Test
+    public void p2wshScript() {
+        Script redeemScript = new Script(List.of(
+            "0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798",
+            valueOf(OP_CHECKSIG)
+        ));
+        assertEquals("bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3", redeemScript.p2wshAddress(AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX));
+    }
+
+    @Test
+    public void p2wshScript2() {
+        Script redeemScript = new Script(List.of(
+            "0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798",
+            valueOf(OP_CHECKSIG)
+        ));
+        assertEquals("tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7", redeemScript.p2wshAddress(AddressConstants.TESTNET_P2WPKH_ADDRESS_PREFIX));
+    }
 }

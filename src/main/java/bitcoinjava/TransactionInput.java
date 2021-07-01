@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 
 import static bitcoinjava.OpCodes.OP_0;
 import static java.math.BigInteger.valueOf;
@@ -19,7 +18,7 @@ public class TransactionInput {
 
     private final BigInteger sequence;
 
-    private Witness witness = new Witness(List.of());
+    private Witness witness = new Witness(new ArrayList<>());
 
     public TransactionInput(String previousTransactionId, BigInteger previousIndex, Script scriptSig, BigInteger sequence) {
         this.previousTransactionId = previousTransactionId;
@@ -85,4 +84,10 @@ public class TransactionInput {
         this.witness = witness;
     }
 
+    public void appendToWitness(Object command) {
+        if (witness.getItems().size() == 0) {
+            witness.appendItem(valueOf(OP_0));
+        }
+        witness.appendItem(command);
+    }
 }
