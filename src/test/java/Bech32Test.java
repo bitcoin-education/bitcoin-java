@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
+import static bitcoinjava.Bech32.BECH32;
 import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +30,7 @@ public class Bech32Test {
     @ParameterizedTest
     @MethodSource("createChecksumParameters")
     public void createChecksumTest(String hrp, List<Integer> data, List<Integer> expectedResult) {
-        assertEquals(expectedResult, Bech32.createChecksum(hrp, data));
+        assertEquals(expectedResult, Bech32.createChecksum(hrp, data, BECH32));
     }
 
     @ParameterizedTest
@@ -136,6 +137,36 @@ public class Bech32Test {
                 0,
                 "751e76e8199196d454941c45d1b3a323f1433bd6",
                 "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4".toLowerCase(Locale.ROOT)
+            ),
+            Arguments.of(
+                "bc",
+                1,
+                "751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6",
+                "bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kt5nd6y"
+            ),
+            Arguments.of(
+                "bc",
+                16,
+                "751e",
+                "BC1SW50QGDZ25J".toLowerCase(Locale.ROOT)
+            ),
+            Arguments.of(
+                "bc",
+                2,
+                "751e76e8199196d454941c45d1b3a323",
+                "bc1zw508d6qejxtdg4y5r3zarvaryvaxxpcs"
+            ),
+            Arguments.of(
+                "tb",
+                1,
+                "000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433",
+                "tb1pqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesf3hn0c"
+            ),
+            Arguments.of(
+                "bc",
+                1,
+                "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+                "bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0"
             )
         );
     }

@@ -13,12 +13,16 @@ import static java.util.Objects.isNull;
 public class Bech32 {
 
     private static final String BECH32_ALPHABET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+    public static final int BECH32 = 1;
+    public static final int BECH32M = 2;
+    private static final int BECH32M_CONST = 0x2bc830a3;
 
-    public static List<Integer> createChecksum(String hrp, List<Integer> data) {
+    public static List<Integer> createChecksum(String hrp, List<Integer> data, int spec) {
         List<Integer> values = new ArrayList<>(hrpExpand(hrp));
         values.addAll(data);
         values.addAll(List.of(0, 0, 0, 0, 0, 0));
-        BigInteger polymod = polymod(values).xor(ONE);
+        BigInteger constant = spec == BECH32M ? valueOf(BECH32M_CONST) : ONE;
+        BigInteger polymod = polymod(values).xor(constant);
         List<Integer> checksum = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             checksum.add((polymod.shiftRight(valueOf(5).multiply(valueOf(5).subtract(valueOf(i))).intValueExact())).and(valueOf(31)).intValueExact());
@@ -61,14 +65,12 @@ public class Bech32 {
         return checksum;
     }
 
-    /*
-    Compatible only with witness version 0 for now
-     */
     public static String encode(String hrp, int witnessVersion, byte[] witnessProgram) {
+        int spec = witnessVersion == 0 ? BECH32 : BECH32M;
         ArrayList<Integer> combinedProgram = new ArrayList<>();
         combinedProgram.add(witnessVersion);
         combinedProgram.addAll(BitsConverter.convertBits(witnessProgram, 8, 5, true));
-        String result = bech32Encode(hrp, combinedProgram);
+        String result = bech32Encode(hrp, combinedProgram, spec);
         String[] decoded = decode(hrp, result);
         if (isNull(decoded[0]) || isNull(decoded[1])) {
             return null;
@@ -76,9 +78,9 @@ public class Bech32 {
         return result;
     }
 
-    private static String bech32Encode(String hrp, ArrayList<Integer> combinedProgram) {
+    private static String bech32Encode(String hrp, ArrayList<Integer> combinedProgram, int spec) {
         ArrayList<Integer> combined = new ArrayList<>(combinedProgram);
-        combined.addAll(createChecksum(hrp, combinedProgram));
+        combined.addAll(createChecksum(hrp, combinedProgram, spec));
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(hrp);
         stringBuilder.append("1");
@@ -92,6 +94,7 @@ public class Bech32 {
         Object[] hrpAddress = bech32Decode(address);
         String hrpGot = (String) hrpAddress[0];
         List<Integer> data = (List<Integer>) hrpAddress[1];
+        BigInteger spec = (BigInteger) hrpAddress[2];
         if (!hrpGot.equals(hrp)) {
             return new String[]{null, null};
         }
@@ -106,6 +109,9 @@ public class Bech32 {
             return new String[]{null, null};
         }
         if (data.get(0) == 0 && decoded.size() != 20 && decoded.size() != 32) {
+            return new String[]{null, null};
+        }
+        if ((data.get(0) == 0 && !spec.equals(valueOf(BECH32))) || (data.get(0) != 0 && !spec.equals(valueOf(BECH32M)))) {
             return new String[]{null, null};
         }
         ByteArrayOutputStream decodedBytes = new ByteArrayOutputStream();
@@ -129,7 +135,7 @@ public class Bech32 {
         if (isNull(spec)) {
             return new Object[]{null, null};
         }
-        return new Object[]{hrp, data.subList(0, data.size() - 6)};
+        return new Object[]{hrp, data.subList(0, data.size() - 6), spec};
     }
 
     private static boolean isValidAddress(String address, int position) {
@@ -147,8 +153,12 @@ public class Bech32 {
     private static BigInteger verifyChecksum(String hrp, List<Integer> data) {
         ArrayList<Integer> combined = new ArrayList<>(hrpExpand(hrp));
         combined.addAll(data);
-        if (polymod(combined).equals(ONE)) {
-            return ONE;
+        BigInteger constant = polymod(combined);
+        if (constant.equals(ONE)) {
+            return valueOf(BECH32);
+        }
+        if (constant.equals(valueOf(BECH32M_CONST))) {
+            return valueOf(BECH32M);
         }
         return null;
     }
