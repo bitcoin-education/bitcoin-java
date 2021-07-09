@@ -6,12 +6,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static java.math.BigInteger.*;
 
@@ -120,13 +117,7 @@ public class Script {
     }
 
     public String p2wshAddress(String prefix) {
-        MessageDigest sha256 = null;
-        try {
-            sha256 = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new NoSuchElementException("Algorithm SHA-256 not found. You may need to add BouncyCastleProvider as a security provider in your project.");
-        }
-        return Bech32.encode(prefix, 0,sha256.digest(Hex.decode(rawSerialize())));
+        return Bech32.encode(prefix, 0, Sha256.hash(Hex.decode(rawSerialize())));
     }
 
     public static Script p2pkhScript(String hash160Pubkey) {

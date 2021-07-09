@@ -7,11 +7,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -56,13 +53,7 @@ public class MnemonicSeedGenerator {
     }
 
     private static int getChecksum(byte[] entropy) {
-        MessageDigest sha256 = null;
-        try {
-            sha256 = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new NoSuchElementException("Algorithm SHA-256 not found. You may need to add BouncyCastleProvider as a security provider in your project.");
-        }
-        byte[] sha256Entropy = sha256.digest(entropy);
+        byte[] sha256Entropy = Sha256.hash(entropy);
         int checksumSize = entropy.length * 8 / 32;
         int checksum = BitsConverter.convertBits(sha256Entropy, 8, checksumSize, true).get(0);
         checksum <<= 8 - checksumSize;
