@@ -6,6 +6,10 @@ import org.bouncycastle.util.encoders.Hex;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 
+import static bitcoinjava.SecP256K1.G;
+import static java.math.BigInteger.TWO;
+import static java.math.BigInteger.ZERO;
+
 public class PrivateKey {
     private final BigInteger secret;
 
@@ -38,5 +42,14 @@ public class PrivateKey {
             byteArrayOutputStream.writeBytes(Hex.decodeStrict("01"));
         }
         return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
+    }
+
+    public PrivateKey toTaprootTweakSeckey(BigInteger h) {
+        BigInteger secretKey = secret;
+        if (!publicKey.getPoint().getAffineYCoord().toBigInteger().mod(TWO).equals(ZERO)) {
+            secretKey = SecP256K1.order.subtract(secretKey);
+        }
+        BigInteger t = TaggedHash.hashToBigInteger("TapTweak", BigIntegers.asUnsignedByteArray(publicKey.getX().add(h)));
+        return new PrivateKey(secretKey.add(t).mod(SecP256K1.order));
     }
 }

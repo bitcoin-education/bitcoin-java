@@ -4,13 +4,15 @@ import org.bouncycastle.math.ec.ECFieldElement;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.math.ec.custom.sec.SecP256K1FieldElement;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
+import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 
-import static bitcoinjava.SecP256K1.pow;
-import static bitcoinjava.SecP256K1.sqrt;
+import static bitcoinjava.AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX;
+import static bitcoinjava.BIP340.liftX;
+import static bitcoinjava.SecP256K1.*;
 import static java.math.BigInteger.*;
 
 public class PublicKey {
@@ -48,6 +50,20 @@ public class PublicKey {
         return new PublicKey(SecP256K1.curve.createPoint(x, oddBeta.toBigInteger()).normalize());
     }
 
+    public PublicKey toTaprootInternalKey() {
+        return taprootInternalKeyFromX(getX());
+    }
+
+    public PublicKey toTaprootSingleKeyOutputKey() {
+        return new PublicKey(
+            G.multiply(TaggedHash.hashToBigInteger("TapTweak", BigIntegers.asUnsignedByteArray(getX()))).add(this.point).normalize()
+        );
+    }
+
+    public static PublicKey taprootInternalKeyFromX(BigInteger x) {
+        return new PublicKey(liftX(x));
+    }
+
     private byte[] uncompressedPublicKey(ECPoint point) {
         return point.getEncoded(false);
     }
@@ -79,6 +95,10 @@ public class PublicKey {
         return Bech32.encode(prefix, 0, hash160);
     }
 
+    public String taprootAddress(String prefix) {
+        return Bech32.encode(prefix, 1, point.getAffineXCoord().getEncoded());
+    }
+
     private String concat(String prefix, byte[] hash160) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.writeBytes(Hex.decodeStrict(prefix));
@@ -96,5 +116,13 @@ public class PublicKey {
 
     public ECPoint getPoint() {
         return point;
+    }
+
+    public BigInteger getX() {
+        return point.getAffineXCoord().toBigInteger();
+    }
+
+    public String getXHex() {
+        return Hex.toHexString(BigIntegers.asUnsignedByteArray(getX()));
     }
 }
