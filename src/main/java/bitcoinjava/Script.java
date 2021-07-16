@@ -1,5 +1,6 @@
 package bitcoinjava;
 
+import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayInputStream;
@@ -126,6 +127,10 @@ public class Script {
 
     public static Script p2wpkhScript(String hash160Pubkey) {
         return new Script(List.of(ZERO, hash160Pubkey));
+    }
+
+    public static Script p2trScript(String outputKey) {
+        return new Script(List.of(valueOf(OpCodes.OP_1), outputKey));
     }
 
     public static Script p2shScript(String hash160) {

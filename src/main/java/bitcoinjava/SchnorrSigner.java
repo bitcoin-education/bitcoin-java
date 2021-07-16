@@ -1,14 +1,12 @@
 package bitcoinjava;
 
-import org.bouncycastle.math.ec.ECFieldElement;
 import org.bouncycastle.math.ec.ECPoint;
-import org.bouncycastle.math.ec.custom.sec.SecP256K1FieldElement;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.bouncycastle.util.BigIntegers;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 
+import static bitcoinjava.BIP340.liftX;
 import static bitcoinjava.SecP256K1.*;
 import static java.math.BigInteger.*;
 
@@ -23,13 +21,13 @@ public class SchnorrSigner {
         if (!y.mod(BigInteger.TWO).equals(BigInteger.ZERO)) {
             secret = SecP256K1.order.subtract(secret);
         }
-        byte[] hashTagBIP0340Aux = hashTag("BIP0340/aux", BigIntegers.asUnsignedByteArray(32, auxRand));
-        byte[] t = BigIntegers.asUnsignedByteArray(32, secret.xor(new BigInteger(1, hashTagBIP0340Aux)));
+        BigInteger hashTagBIP0340Aux = TaggedHash.hashToBigInteger("BIP0340/aux", BigIntegers.asUnsignedByteArray(32, auxRand));
+        byte[] t = BigIntegers.asUnsignedByteArray(32, secret.xor(hashTagBIP0340Aux));
         byte[] x = point.getAffineXCoord().getEncoded();
         byte[] messageBytes = BigIntegers.asUnsignedByteArray(32, message);
         byte[] combined = ByteUtils.concatenate(ByteUtils.concatenate(t,x), messageBytes);
-        byte[] randBytes = hashTag("BIP0340/nonce", combined);
-        BigInteger k = new BigInteger(1, randBytes).mod(SecP256K1.order);
+        BigInteger rand = TaggedHash.hashToBigInteger("BIP0340/nonce", combined);
+        BigInteger k = rand.mod(SecP256K1.order);
         if (k.equals(BigInteger.ZERO)) {
             throw new IllegalArgumentException("k cannot be equal to 0");
         }
@@ -40,7 +38,7 @@ public class SchnorrSigner {
         }
         byte[] rX = r.getAffineXCoord().getEncoded();
         byte[] combined2 = ByteUtils.concatenate(ByteUtils.concatenate(rX,x), messageBytes);
-        BigInteger e = new BigInteger(1, hashTag("BIP0340/challenge", combined2)).mod(SecP256K1.order);
+        BigInteger e = TaggedHash.hashToBigInteger("BIP0340/challenge", combined2).mod(SecP256K1.order);
 
         byte[] signatureBytes = ByteUtils.concatenate(rX, BigIntegers.asUnsignedByteArray(32, k.add(e.multiply(secret)).mod(SecP256K1.order)));
         BigInteger signature = new BigInteger(1, signatureBytes);
@@ -67,7 +65,7 @@ public class SchnorrSigner {
         byte[] pubkeyXBytes = BigIntegers.asUnsignedByteArray(32, pubKeyX);
         byte[] messageBytes = BigIntegers.asUnsignedByteArray(32, message);
         byte[] combined = ByteUtils.concatenate(ByteUtils.concatenate(r, pubkeyXBytes), messageBytes);
-        BigInteger e = new BigInteger(1, hashTag("BIP0340/challenge", combined)).mod(SecP256K1.order);
+        BigInteger e = TaggedHash.hashToBigInteger("BIP0340/challenge", combined).mod(SecP256K1.order);
         ECPoint R = G.multiply(new BigInteger(1, s)).subtract(publicKey.multiply(e)).normalize();
         if (R.isInfinity()) {
             return false;
@@ -78,28 +76,4 @@ public class SchnorrSigner {
         return R.getAffineXCoord().toBigInteger().equals(new BigInteger(1, r));
     }
 
-    private static ECPoint liftX(BigInteger pubKeyX) {
-        SecP256K1FieldElement xElement;
-        try {
-            xElement = new SecP256K1FieldElement(pubKeyX);
-        } catch (IllegalArgumentException exception) {
-            return null;
-        }
-        ECFieldElement c = pow(xElement, valueOf(3)).add(new SecP256K1FieldElement(valueOf(7)));
-        ECFieldElement y = sqrt(c);
-        if (!c.toBigInteger().equals(pow(y, TWO).toBigInteger())) {
-            return null;
-        }
-        BigInteger yNum = y.toBigInteger();
-        if (!yNum.mod(TWO).equals(ZERO)) {
-            yNum = curve.getQ().subtract(yNum);
-        }
-        return SecP256K1.curve.createPoint(pubKeyX, yNum).normalize();
-    }
-
-    private static byte[] hashTag(String tag, byte[] key) {
-        byte[] shaTag = Sha256.hash(tag.getBytes(StandardCharsets.UTF_8));
-        byte[] shaTags = ByteUtils.concatenate(shaTag, shaTag);
-        return Sha256.hash(ByteUtils.concatenate(shaTags, key));
-    }
 }

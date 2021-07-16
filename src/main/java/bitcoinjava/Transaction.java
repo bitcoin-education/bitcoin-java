@@ -1,11 +1,13 @@
 package bitcoinjava;
 
+import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.Objects.isNull;
@@ -31,12 +33,26 @@ public class Transaction {
 
     private String hashOutputs;
 
+    private String shaPrevOuts;
+
+    private String shaSequence;
+
+    private String shaOutputs;
+
+    private String shaScriptPubkeys;
+
+    private String shaAmounts;
+
     public Transaction(BigInteger version, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, BigInteger locktime, boolean segwit) {
         this.version = version;
         this.inputs = inputs;
         this.outputs = outputs;
         this.locktime = locktime;
         this.segwit = segwit;
+    }
+
+    public String id() throws IOException {
+        return LittleEndian.fromUnsignedLittleEndianToHex(new BigInteger(1, Hash256.hash(Hex.decode(serializeLegacy()))), 32);
     }
 
     public static Transaction fromByteStream(ByteArrayInputStream stream) throws IOException {
@@ -197,6 +213,26 @@ public class Transaction {
         return Hash256.hashToHex(zRaw);
     }
 
+    public String sigHashTaproot(int inputIndex, List<String> serializedScriptPubkeys, List<BigInteger> amounts) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("00");
+        stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(version, 4));
+        stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(locktime, 4));
+        shaPrevOutsAndSequences();
+        stringBuilder.append(shaPrevOuts);
+        shaAmounts(amounts);
+        stringBuilder.append(shaAmounts);
+        shaScriptPubkeys(serializedScriptPubkeys);
+        stringBuilder.append(shaScriptPubkeys);
+        stringBuilder.append(shaSequence);
+        shaOutputs();
+        stringBuilder.append(shaOutputs);
+        stringBuilder.append("00");
+        TransactionInput transactionInput = inputs.get(inputIndex);
+        stringBuilder.append(LittleEndian.fromUnsignedLittleEndianToHex(transactionInput.getPreviousIndex(), 4));
+        return stringBuilder.toString();
+    }
+
     private void hashOutputs() throws IOException {
         if(isNull(hashOutputs)) {
             StringBuilder allOutputs = new StringBuilder();
@@ -218,6 +254,50 @@ public class Transaction {
             });
             hashPrevOuts = Hash256.hashToHex(allPrevOuts.toString());
             hashSequence = Hash256.hashToHex(allSequences.toString());
+        }
+    }
+
+    private void shaPrevOutsAndSequences() {
+        if(isNull(shaPrevOuts)) {
+            StringBuilder allPrevOuts = new StringBuilder();
+            StringBuilder allSequences = new StringBuilder();
+            inputs.forEach(input -> {
+                allPrevOuts.append(Bytes.reverseFromHex(input.getPreviousTransactionId()));
+                allPrevOuts.append(LittleEndian.fromUnsignedLittleEndianToHex(input.getPreviousIndex(), 4));
+                allSequences.append(LittleEndian.fromUnsignedLittleEndianToHex(input.getSequence(), 4));
+            });
+            shaPrevOuts = Sha256.hashToHex(allPrevOuts.toString());
+            shaSequence = Sha256.hashToHex(allSequences.toString());
+        }
+    }
+
+    private void shaOutputs() throws IOException {
+        if(isNull(shaOutputs)) {
+            StringBuilder allOutputs = new StringBuilder();
+            for (TransactionOutput output : outputs) {
+                allOutputs.append(output.serialize());
+            }
+            shaOutputs = Sha256.hashToHex(allOutputs.toString());
+        }
+    }
+
+    private void shaScriptPubkeys(List<String> serializedScriptPubkeys) {
+        if(isNull(shaScriptPubkeys)) {
+            StringBuilder allScriptPubkeys = new StringBuilder();
+            for (String scripts : serializedScriptPubkeys) {
+                allScriptPubkeys.append(scripts);
+            }
+            shaScriptPubkeys = Sha256.hashToHex(allScriptPubkeys.toString());
+        }
+    }
+
+    private void shaAmounts(List<BigInteger> amounts) {
+        if(isNull(shaAmounts)) {
+            StringBuilder allAmounts = new StringBuilder();
+            for (BigInteger amount : amounts) {
+                allAmounts.append(LittleEndian.fromUnsignedLittleEndianToHex(amount, 8));
+            }
+            shaAmounts = Sha256.hashToHex(allAmounts.toString());
         }
     }
 

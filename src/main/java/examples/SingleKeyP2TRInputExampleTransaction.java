@@ -10,45 +10,43 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bitcoinjava.AddressConstants.*;
+import static bitcoinjava.AddressConstants.TESTNET_P2WPKH_ADDRESS_PREFIX;
 
-public class OneP2WPKHInputExampleTransaction {
+public class SingleKeyP2TRInputExampleTransaction {
     public static void main(String[] args) throws IOException {
         Security.addProvider(new BouncyCastleProvider());
 
-        PrivateKey privateKey = PrivateKey.fromWif("cSW3tzg8jNJPUqNyntwJSPXtQW2EcWEwZfsLCK6nHfAEyrJsZ7x7", true);
+        String secret = "ec88a6704b4f47d5a2e52a1157bb28b9";
+        System.out.println("private key for p2tr input: " + secret);
+        PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decode(secret)));
+        PublicKey internalKey = privateKey.getPublicKey().toTaprootInternalKey();
+        PublicKey outputKey = internalKey.toTaprootSingleKeyOutputKey();
+        PrivateKey secretKey = privateKey.toTaprootTweakSeckey(BigInteger.ZERO);
 
-        System.out.println("private key for p2wpkh input: " + privateKey.getSecret());
-        final String address = privateKey.getPublicKey().segwitAddressFromCompressedPublicKey(TESTNET_P2WPKH_ADDRESS_PREFIX);
-        System.out.println("address for p2wpkh input: " + address);
+        String address = outputKey.taprootAddress(TESTNET_P2WPKH_ADDRESS_PREFIX);
+        System.out.println("address for p2tr input: " + address);
 
-        String p2wpkhInputTransactionId = "88807c5e0731a898b7010d29372649a17864eaf9177910e6a535a42cd6c54289";
+        String p2wpkhInputTransactionId = "37f67076d3da37ed0997056f8dde7a971248a68373b67e48095eda5457b77657";
         TransactionInput transactionInput1 = new TransactionInput(
             p2wpkhInputTransactionId,
             BigInteger.ZERO,
-            new Script(List.of()),
+            new Script(new ArrayList<>()),
             new BigInteger(1, Hex.decode("ffffffff"))
         );
         ArrayList<TransactionInput> transactionInputArrayList = new ArrayList<>();
         transactionInputArrayList.add(transactionInput1);
 
-        BigInteger amount = BigInteger.valueOf(5_000);
+        BigInteger amount = BigInteger.valueOf(4_000);
         Script script = Script.p2trScript(Bech32.decode("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k")[1]);
-        TransactionOutput transactionOutput= new TransactionOutput(amount, script);
+        TransactionOutput transactionOutput = new TransactionOutput(amount, script);
         System.out.println("output 0 address: " + "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k");
-        System.out.println("output 0 amount: " + "5.000 satoshis");
-
-        TransactionOutput transactionOutputChange = new TransactionOutput(BigInteger.valueOf(94_000), Script.p2wpkhScript(Bech32.decode("tb", address)[1]));
-        System.out.println("output 1 address: " + address);
-        System.out.println("output 1 amount: " + "94.000 satoshis");
-
+        System.out.println("output 0 amount: " + "4,000 satoshis");
         ArrayList<TransactionOutput> transactionOutputArrayList = new ArrayList<>();
         transactionOutputArrayList.add(transactionOutput);
-        transactionOutputArrayList.add(transactionOutputChange);
 
         Transaction transaction = new Transaction(BigInteger.ONE, transactionInputArrayList, transactionOutputArrayList, BigInteger.ZERO, true);
         System.out.println("unsigned transaction: " + transaction.serialize());
-        TransactionECDSASigner.sign(transaction, privateKey, 0, BigInteger.valueOf(100_000), true);
+        TransactionSchnorrSigner.sign(transaction, secretKey.getSecret(), 0, List.of(BigInteger.valueOf(5_000)), List.of(script));
 
         System.out.println("signed transaction: " + transaction.serialize());
         System.out.println("transaction id: " + transaction.id());
