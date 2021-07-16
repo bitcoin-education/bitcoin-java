@@ -31,7 +31,6 @@ public class TransactionSchnorrSigner {
     }
 
     private static String getSigHash(Transaction transaction, int index, List<BigInteger> amounts, List<Script> scripts) throws IOException {
-        //todo: se der ruim, tentar serializar scripts com outros metodos
         List<String> scriptsSerialized = scripts.stream().map(script -> {
             try {
                 return script.serialize();

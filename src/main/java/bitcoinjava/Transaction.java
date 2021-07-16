@@ -51,6 +51,10 @@ public class Transaction {
         this.segwit = segwit;
     }
 
+    public String id() throws IOException {
+        return LittleEndian.fromUnsignedLittleEndianToHex(new BigInteger(1, Hash256.hash(Hex.decode(serializeLegacy()))), 32);
+    }
+
     public static Transaction fromByteStream(ByteArrayInputStream stream) throws IOException {
         if (isSegwit(stream)) {
             return parseSegwit(stream);
