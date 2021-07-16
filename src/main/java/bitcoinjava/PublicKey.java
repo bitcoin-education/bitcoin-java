@@ -10,7 +10,6 @@ import org.bouncycastle.util.encoders.Hex;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 
-import static bitcoinjava.AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX;
 import static bitcoinjava.BIP340.liftX;
 import static bitcoinjava.SecP256K1.*;
 import static java.math.BigInteger.*;
