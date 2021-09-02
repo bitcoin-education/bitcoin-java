@@ -2,6 +2,7 @@ package bitcoinjava;
 
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +14,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MnemonicSeedGenerator {
-    public static MnemonicSeed generateRandom(int strength) throws IOException, URISyntaxException {
+    public static MnemonicSeed generateRandom(int strength) throws FileNotFoundException {
         if (!List.of(128, 160, 192, 224, 256).contains(strength)) {
             throw new IllegalArgumentException("Strength not allowed, must be one of: 128, 160, 192, 224 or 256");
         }
@@ -23,20 +24,30 @@ public class MnemonicSeedGenerator {
         return mnemonicSeed;
     }
 
-    public static MnemonicSeed fromEntropy(byte[] entropy) throws IOException, URISyntaxException {
+    public static MnemonicSeed fromEntropy(byte[] entropy) throws FileNotFoundException {
         int checksum = getChecksum(entropy);
 
         byte[] combined = ByteUtils.concatenate(entropy, new byte[]{(byte) checksum});
 
         List<Integer> indexes = BitsConverter.convertBits(combined, 8, 11, false);
 
-        URI path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
-        List<String> wordlist = Files.readAllLines(Path.of(path));
+        List<String> wordlist = loadWordlist();
 
         return new MnemonicSeed(indexes.stream().map(wordlist::get).collect(Collectors.joining(" ")));
     }
 
-    public static void check(MnemonicSeed mnemonicSeed) throws IOException, URISyntaxException {
+    private static List<String> loadWordlist() throws FileNotFoundException {
+        List<String> wordlist;
+        try {
+            URI path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
+            wordlist = Files.readAllLines(Path.of(path));
+        } catch (IOException | URISyntaxException e) {
+            throw new FileNotFoundException("Could not find wordlist file");
+        }
+        return wordlist;
+    }
+
+    public static void check(MnemonicSeed mnemonicSeed) throws FileNotFoundException {
         assert List.of(12, 15, 18, 21, 24).contains(mnemonicSeed.getSentence().split(" ").length);
 
         byte[] entropy = mnemonicSeed.toEntropy();
@@ -46,8 +57,7 @@ public class MnemonicSeedGenerator {
 
         List<Integer> indexes = BitsConverter.convertBits(combined, 8, 11, false);
 
-        URI path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
-        List<String> wordlist = Files.readAllLines(Path.of(path));
+        List<String> wordlist = loadWordlist();
 
         assert new MnemonicSeed(indexes.stream().map(wordlist::get).collect(Collectors.joining(" "))).getSentence().equals(mnemonicSeed.getSentence());
     }
