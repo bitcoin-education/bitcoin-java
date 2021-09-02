@@ -1,7 +1,7 @@
-import bitcoinjava.P2WSHTransactionECDSASigner;
-import bitcoinjava.PrivateKey;
-import bitcoinjava.Script;
-import bitcoinjava.Transaction;
+import io.github.bitcoineducation.bitcoinjava.P2WSHTransactionECDSASigner;
+import io.github.bitcoineducation.bitcoinjava.PrivateKey;
+import io.github.bitcoineducation.bitcoinjava.Script;
+import io.github.bitcoineducation.bitcoinjava.Transaction;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
-import static bitcoinjava.OpCodes.*;
+import static io.github.bitcoineducation.bitcoinjava.OpCodes.*;
 import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

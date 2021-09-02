@@ -1,6 +1,6 @@
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
-import bitcoinjava.Signature;
+import io.github.bitcoineducation.bitcoinjava.Signature;
 
 import java.io.IOException;
 import java.math.BigInteger;

@@ -1,6 +1,6 @@
 package examples;
 
-import bitcoinjava.*;
+import io.github.bitcoineducation.bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -10,7 +10,7 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bitcoinjava.AddressConstants.*;
+import static io.github.bitcoineducation.bitcoinjava.AddressConstants.TESTNET_P2WPKH_ADDRESS_PREFIX;
 
 public class OneP2WPKHInputExampleTransaction {
     public static void main(String[] args) throws IOException {

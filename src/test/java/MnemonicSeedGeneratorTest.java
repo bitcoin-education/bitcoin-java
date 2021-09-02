@@ -1,5 +1,5 @@
-import bitcoinjava.MnemonicSeed;
-import bitcoinjava.MnemonicSeedGenerator;
+import io.github.bitcoineducation.bitcoinjava.MnemonicSeed;
+import io.github.bitcoineducation.bitcoinjava.MnemonicSeedGenerator;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

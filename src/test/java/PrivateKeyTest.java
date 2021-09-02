@@ -1,9 +1,9 @@
-import bitcoinjava.PublicKey;
+import io.github.bitcoineducation.bitcoinjava.PublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import bitcoinjava.PrivateKey;
+import io.github.bitcoineducation.bitcoinjava.PrivateKey;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

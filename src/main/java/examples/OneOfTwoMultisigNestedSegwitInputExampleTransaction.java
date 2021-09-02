@@ -1,6 +1,6 @@
 package examples;
 
-import bitcoinjava.*;
+import io.github.bitcoineducation.bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -10,7 +10,7 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bitcoinjava.OpCodes.*;
+import static io.github.bitcoineducation.bitcoinjava.OpCodes.*;
 import static java.math.BigInteger.valueOf;
 
 public class OneOfTwoMultisigNestedSegwitInputExampleTransaction {

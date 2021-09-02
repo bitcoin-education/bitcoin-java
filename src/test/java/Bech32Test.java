@@ -1,4 +1,4 @@
-import bitcoinjava.Bech32;
+import io.github.bitcoineducation.bitcoinjava.Bech32;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import static bitcoinjava.Bech32.BECH32;
+import static io.github.bitcoineducation.bitcoinjava.Bech32.BECH32;
 import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
