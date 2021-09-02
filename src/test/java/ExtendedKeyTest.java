@@ -1,4 +1,4 @@
-import bitcoinjava.*;
+import io.github.bitcoineducation.bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeAll;

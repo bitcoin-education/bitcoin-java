@@ -1,4 +1,4 @@
-import bitcoinjava.Base58;
+import io.github.bitcoineducation.bitcoinjava.Base58;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-import bitcoinjava.*;
+import io.github.bitcoineducation.bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.security.Security;
 import java.util.List;
 
-import static bitcoinjava.OpCodes.*;
+import static io.github.bitcoineducation.bitcoinjava.OpCodes.*;
 import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

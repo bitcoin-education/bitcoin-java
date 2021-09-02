@@ -1,4 +1,4 @@
-import bitcoinjava.BitsConverter;
+import io.github.bitcoineducation.bitcoinjava.BitsConverter;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

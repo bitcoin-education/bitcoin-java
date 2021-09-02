@@ -1,6 +1,4 @@
-import bitcoinjava.Bech32;
-import bitcoinjava.PublicKey;
-import bitcoinjava.Script;
+import io.github.bitcoineducation.bitcoinjava.PublicKey;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,8 +7,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.math.BigInteger;
 import java.util.stream.Stream;
 
-import static bitcoinjava.AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX;
-import static bitcoinjava.PublicKey.taprootInternalKeyFromX;
+import static io.github.bitcoineducation.bitcoinjava.AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX;
+import static io.github.bitcoineducation.bitcoinjava.PublicKey.taprootInternalKeyFromX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PublicKeyTest {
