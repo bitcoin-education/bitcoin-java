@@ -45,8 +45,8 @@ Add the following plugin goal:
 </build>
 ```
 
-#Usage
-##Deriving an address, creating and signing a transaction on testnet
+# Usage
+## Deriving an address, creating and signing a transaction on testnet
 
 ```
 import java.io.IOException;
@@ -125,5 +125,5 @@ public class Example {
 
 More examples at https://github.com/bitcoin-education/bitcoin-java/tree/main/src/main/java/examples 
 
-#Website
+# Website
 https://www.bitcoineducation.site/
