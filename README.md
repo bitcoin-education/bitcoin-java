@@ -46,7 +46,7 @@ Add the following plugin goal:
 ```
 
 # Usage
-## Deriving an address, creating and signing a transaction on testnet
+## Deriving an address, creating and signing a transaction for testnet
 
 ```
 import java.io.IOException;
