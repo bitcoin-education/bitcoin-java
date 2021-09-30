@@ -72,6 +72,15 @@ public class Base58 {
         return copyOfRange(combined, 1, 21);
     }
 
+    public static byte[] decodeExtendedPubkey(String key) {
+        BigInteger number = ZERO;
+        for (Character c : key.toCharArray()) {
+            number = number.multiply(valueOf(58));
+            number = number.add(valueOf(BASE58_ALPHABET.chars().mapToObj(ch -> (char) ch).collect(Collectors.toList()).indexOf(c)));
+        }
+        return BigIntegers.asUnsignedByteArray(number);
+    }
+
     public static String decodeWithChecksumToHex(String key) {
         return Hex.toHexString(decodeWithChecksum(key));
     }

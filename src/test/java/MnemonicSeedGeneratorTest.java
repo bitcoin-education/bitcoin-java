@@ -20,7 +20,7 @@ public class MnemonicSeedGeneratorTest {
         MnemonicSeed mnemonic = MnemonicSeedGenerator.fromEntropy(entropyDecoded);
         assertEquals(mnemonicSeed, mnemonic.getSentence());
         assertEquals(seed, mnemonic.toSeedHex("TREZOR"));
-        assertEquals(xpriv, mnemonic.toMasterKey("TREZOR", "mainnet").serialize());
+        assertEquals(xpriv, mnemonic.toMasterKey("TREZOR").serialize());
         assertArrayEquals(entropyDecoded, mnemonic.toEntropy());
         MnemonicSeedGenerator.check(mnemonic);
     }

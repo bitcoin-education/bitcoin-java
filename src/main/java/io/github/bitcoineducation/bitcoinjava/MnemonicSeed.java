@@ -45,7 +45,7 @@ public class MnemonicSeed {
         return Hex.toHexString(toSeed(passphrase));
     }
 
-    public ExtendedPrivateKey toMasterKey(String passphrase, String environment) {
+    public ExtendedPrivateKey toMasterKey(String passphrase) {
         return ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", toSeed(passphrase)),
             0,
