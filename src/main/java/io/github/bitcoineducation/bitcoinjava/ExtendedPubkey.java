@@ -5,7 +5,9 @@ import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 
 import static java.math.BigInteger.ONE;
@@ -77,6 +79,25 @@ public class ExtendedPubkey implements ExtendedKey {
         byteArrayOutputStream.writeBytes(chainCode);
         byteArrayOutputStream.writeBytes(keyBytes);
         return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
+    }
+
+    public static ExtendedPubkey unserialize(String serialized) throws IOException {
+        byte[] bytes = Base58.decodeExtendedKey(serialized);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        byte[] prefixBytes = byteArrayInputStream.readNBytes(4);
+        byte[] depthBytes = byteArrayInputStream.readNBytes(1);
+        byte[] fingerprintBytes = byteArrayInputStream.readNBytes(4);
+        byte[] childNumberBytes = byteArrayInputStream.readNBytes(4);
+        byte[] chainCodeBytes = byteArrayInputStream.readNBytes(32);
+        byte[] keyBytes = byteArrayInputStream.readNBytes(33);
+        byte[] combinedKey = ByteUtils.concatenate(keyBytes, chainCodeBytes);
+        return new ExtendedPubkey(
+            combinedKey,
+            Hex.toHexString(prefixBytes),
+            Hex.toHexString(depthBytes),
+            Hex.toHexString(fingerprintBytes),
+            Hex.toHexString(childNumberBytes)
+        );
     }
 
     @Override

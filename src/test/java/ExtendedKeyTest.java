@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.stream.Stream;
@@ -20,32 +21,37 @@ public class ExtendedKeyTest {
 
     @ParameterizedTest
     @MethodSource("vector1Parameters")
-    public void vector1(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
-        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
+    public void vector1(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws IOException {
+        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+        testUnserialization(expectedSerializedExtendedKey, extendedKey);
     }
 
     @ParameterizedTest
     @MethodSource("vector2Parameters")
-    public void vector2(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
-        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
+    public void vector2(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws IOException {
+        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+        testUnserialization(expectedSerializedExtendedKey, extendedKey);
     }
 
     @ParameterizedTest
     @MethodSource("vector3Parameters")
-    public void vector3(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
-        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
+    public void vector3(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws IOException {
+        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+        testUnserialization(expectedSerializedExtendedKey, extendedKey);
     }
 
     @ParameterizedTest
     @MethodSource("vector4Parameters")
-    public void vector4(String expectedSerializedExtendedKey, ExtendedKey extendedPrivateKey) {
-        assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
+    public void vector4(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws IOException {
+        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+        testUnserialization(expectedSerializedExtendedKey, extendedKey);
     }
 
     @ParameterizedTest
     @MethodSource("fromPublicKeyParameters")
-    public void fromPublicKey(String expectedSerializedExtendedKey, ExtendedKey extendedPubkey) {
-        assertEquals(expectedSerializedExtendedKey, extendedPubkey.serialize());
+    public void fromPublicKey(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws IOException {
+        assertEquals(expectedSerializedExtendedKey, extendedKey.serialize());
+        testUnserialization(expectedSerializedExtendedKey, extendedKey);
     }
 
     @ParameterizedTest
@@ -365,6 +371,16 @@ public class ExtendedKeyTest {
                 masterPrivateKey.ckd("84'/0'/0'/0/3", true)
             )
         );
+    }
+
+    private void testUnserialization(String expectedSerializedExtendedKey, ExtendedKey extendedKey) throws IOException {
+        if (extendedKey instanceof ExtendedPubkey) {
+            ExtendedPubkey extendedPubkey = ExtendedPubkey.unserialize(expectedSerializedExtendedKey);
+            assertEquals(expectedSerializedExtendedKey, extendedPubkey.serialize());
+        } else {
+            ExtendedPrivateKey extendedPrivateKey = ExtendedPrivateKey.unserialize(expectedSerializedExtendedKey);
+            assertEquals(expectedSerializedExtendedKey, extendedPrivateKey.serialize());
+        }
     }
 
 }

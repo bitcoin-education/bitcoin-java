@@ -4,8 +4,11 @@ import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.valueOf;
@@ -71,6 +74,26 @@ public class ExtendedPrivateKey implements ExtendedKey {
         byteArrayOutputStream.writeBytes(Hex.decode("00"));
         byteArrayOutputStream.writeBytes(keyBytes);
         return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
+    }
+
+    public static ExtendedPrivateKey unserialize(String serialized) throws IOException {
+        byte[] bytes = Base58.decodeExtendedKey(serialized);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        byte[] prefixBytes = byteArrayInputStream.readNBytes(4);
+        byte[] depthBytes = byteArrayInputStream.readNBytes(1);
+        byte[] fingerprintBytes = byteArrayInputStream.readNBytes(4);
+        byte[] childNumberBytes = byteArrayInputStream.readNBytes(4);
+        byte[] chainCodeBytes = byteArrayInputStream.readNBytes(32);
+        byteArrayInputStream.skip(1);
+        byte[] keyBytes = byteArrayInputStream.readNBytes(32);
+        byte[] combinedKey = ByteUtils.concatenate(keyBytes, chainCodeBytes);
+        return new ExtendedPrivateKey(
+            combinedKey,
+            Hex.toHexString(prefixBytes),
+            Hex.toHexString(depthBytes),
+            Hex.toHexString(fingerprintBytes),
+            Hex.toHexString(childNumberBytes)
+        );
     }
 
     public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened) {
@@ -148,5 +171,4 @@ public class ExtendedPrivateKey implements ExtendedKey {
     public byte[] getKey() {
         return key;
     }
-
 }
