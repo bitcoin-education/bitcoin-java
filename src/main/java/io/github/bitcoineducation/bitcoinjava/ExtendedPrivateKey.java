@@ -171,15 +171,4 @@ public class ExtendedPrivateKey implements ExtendedKey {
     public byte[] getKey() {
         return key;
     }
-
-    @Override
-    public String toString() {
-        return "ExtendedPrivateKey{" +
-            "key=" + Arrays.toString(key) +
-            ", prefix='" + prefix + '\'' +
-            ", fingerprint='" + fingerprint + '\'' +
-            ", depth='" + depth + '\'' +
-            ", childNumber='" + childNumber + '\'' +
-            '}';
-    }
 }
