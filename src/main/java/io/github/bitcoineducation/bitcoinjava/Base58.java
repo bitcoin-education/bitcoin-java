@@ -72,7 +72,7 @@ public class Base58 {
         return copyOfRange(combined, 1, 21);
     }
 
-    public static byte[] decodeExtendedPubkey(String key) {
+    public static byte[] decodeExtendedKey(String key) {
         BigInteger number = ZERO;
         for (Character c : key.toCharArray()) {
             number = number.multiply(valueOf(58));

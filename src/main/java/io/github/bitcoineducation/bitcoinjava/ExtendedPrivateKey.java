@@ -77,7 +77,7 @@ public class ExtendedPrivateKey implements ExtendedKey {
     }
 
     public static ExtendedPrivateKey unserialize(String serialized) throws IOException {
-        byte[] bytes = Base58.decodeExtendedPubkey(serialized);
+        byte[] bytes = Base58.decodeExtendedKey(serialized);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         byte[] prefixBytes = byteArrayInputStream.readNBytes(4);
         byte[] depthBytes = byteArrayInputStream.readNBytes(1);

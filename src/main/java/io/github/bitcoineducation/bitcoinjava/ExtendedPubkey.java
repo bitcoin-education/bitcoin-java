@@ -82,7 +82,7 @@ public class ExtendedPubkey implements ExtendedKey {
     }
 
     public static ExtendedPubkey unserialize(String serialized) throws IOException {
-        byte[] bytes = Base58.decodeExtendedPubkey(serialized);
+        byte[] bytes = Base58.decodeExtendedKey(serialized);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         byte[] prefixBytes = byteArrayInputStream.readNBytes(4);
         byte[] depthBytes = byteArrayInputStream.readNBytes(1);
