@@ -125,6 +125,7 @@ public class Example {
 
 More examples at https://github.com/bitcoin-education/bitcoin-java/tree/main/src/main/java/examples 
 
-# Websites
+# Website
 https://www.bitcoineducation.site/
+# Discussion
 https://discord.gg/vXK9JbCtvZ
