@@ -8,18 +8,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.valueOf;
 
 public class ExtendedPrivateKey implements ExtendedKey {
-    public static final String MAINNET_PRIVATE_PREFIX = "0488ADE4";
-    public static final String TESTNET_PRIVATE_PREFIX = "04358394";
-    public static final String MAINNET_PRIVATE_NESTED_SEGWIT_PREFIX = "049D7878";
-    public static final String TESTNET_PRIVATE_NESTED_SEGWIT_PREFIX = "044A4E28";
-    public static final String MAINNET_PRIVATE_SEGWIT_PREFIX = "04B2430C";
-    public static final String TESTNET_PRIVATE_SEGWIT_PREFIX = "045F18BC";
 
     private final byte[] key;
 
@@ -96,7 +89,7 @@ public class ExtendedPrivateKey implements ExtendedKey {
         );
     }
 
-    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened) {
+    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String prefix) {
         byte[] keyBytes = ByteUtils.subArray(key, 0, 32);
         byte[] chainCode = ByteUtils.subArray(key, 32, key.length);
         BigInteger actualIndex = index;
@@ -126,17 +119,19 @@ public class ExtendedPrivateKey implements ExtendedKey {
                 depth,
                 childFingerprint,
                 actualIndex,
-                ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+                prefix
+            );
         }
         return ExtendedPubkey.fromPrivate(
             ByteUtils.concatenate(childKey, childChainCode),
             depth,
             childFingerprint,
             actualIndex,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            prefix
+        );
     }
 
-    public ExtendedKey ckd(String derivationPath, boolean isPrivate) {
+    public ExtendedKey ckd(String derivationPath, boolean isPrivate, String prefix) {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
         for (int i = 0, indexesLength = indexes.length; i < indexesLength; i++) {
@@ -149,14 +144,16 @@ public class ExtendedPrivateKey implements ExtendedKey {
                 extendedKey = extendedKey.ckd(
                     new BigInteger(index.replace("'", "")),
                     privateIteration,
-                    true
+                    true,
+                    prefix
                 );
                 continue;
             }
             extendedKey = extendedKey.ckd(
                 new BigInteger(index),
                 privateIteration,
-                false
+                false,
+                prefix
             );
         }
         return extendedKey;

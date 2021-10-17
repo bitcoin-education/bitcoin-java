@@ -1,3 +1,4 @@
+import io.github.bitcoineducation.bitcoinjava.ExtendedKeyPrefixes;
 import io.github.bitcoineducation.bitcoinjava.MnemonicSeed;
 import io.github.bitcoineducation.bitcoinjava.MnemonicSeedGenerator;
 import org.bouncycastle.util.encoders.Hex;
@@ -20,7 +21,7 @@ public class MnemonicSeedGeneratorTest {
         MnemonicSeed mnemonic = MnemonicSeedGenerator.fromEntropy(entropyDecoded);
         assertEquals(mnemonicSeed, mnemonic.getSentence());
         assertEquals(seed, mnemonic.toSeedHex("TREZOR"));
-        assertEquals(xpriv, mnemonic.toMasterKey("TREZOR").serialize());
+        assertEquals(xpriv, mnemonic.toMasterKey("TREZOR", ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()).serialize());
         assertArrayEquals(entropyDecoded, mnemonic.toEntropy());
         MnemonicSeedGenerator.check(mnemonic);
     }

@@ -45,13 +45,14 @@ public class MnemonicSeed {
         return Hex.toHexString(toSeed(passphrase));
     }
 
-    public ExtendedPrivateKey toMasterKey(String passphrase) {
+    public ExtendedPrivateKey toMasterKey(String passphrase, String prefix) {
         return ExtendedPrivateKey.from(
             HMacSha512.hash("Bitcoin seed", toSeed(passphrase)),
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+            prefix
+        );
     }
 
     public byte[] toEntropy() {
