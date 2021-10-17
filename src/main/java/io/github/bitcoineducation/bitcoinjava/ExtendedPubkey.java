@@ -14,13 +14,6 @@ import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.valueOf;
 
 public class ExtendedPubkey implements ExtendedKey {
-    public static final String MAINNET_PUBLIC_PREFIX = "0488B21E";
-    public static final String TESTNET_PUBLIC_PREFIX = "043587CF";
-    public static final String MAINNET_PUBLIC_NESTED_SEGWIT_PREFIX = "049D7CB2";
-    public static final String TESTNET_PUBLIC_NESTED_SEGWIT_PREFIX = "044A5262";
-    public static final String MAINNET_PUBLIC_SEGWIT_PREFIX = "04B24746";
-    public static final String TESTNET_PUBLIC_SEGWIT_PREFIX = "045F1CF6";
-
     private final byte[] key;
 
     private final String prefix;
@@ -101,7 +94,7 @@ public class ExtendedPubkey implements ExtendedKey {
     }
 
     @Override
-    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened) {
+    public ExtendedKey ckd(BigInteger index, boolean isPrivate, boolean isHardened, String prefix) {
         if (isHardened) {
             throw new IllegalArgumentException("Cannot derive hardened key from extended pubkey.");
         }
@@ -130,10 +123,11 @@ public class ExtendedPubkey implements ExtendedKey {
             depth,
             childFingerprint,
             index,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            prefix
+        );
     }
 
-    public ExtendedKey ckd(String derivationPath) {
+    public ExtendedKey ckd(String derivationPath, String prefix) {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
         for (String index : indexes) {
@@ -143,7 +137,8 @@ public class ExtendedPubkey implements ExtendedKey {
             extendedKey = extendedKey.ckd(
                 new BigInteger(index),
                 false,
-                false
+                false,
+                prefix
             );
         }
         return extendedKey;

@@ -74,13 +74,15 @@ public class ExtendedKeyTest {
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()
+        );
         ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix()
+        );
         return Stream.of(
             Arguments.of(
                 "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi",
@@ -92,43 +94,43 @@ public class ExtendedKeyTest {
             ),
             Arguments.of(
                 "xprv9uHRZZhk6KAJC1avXpDAp4MDc3sQKNxDiPvvkX8Br5ngLNv1TxvUxt4cV1rGL5hj6KCesnDYUhd7oWgT11eZG7XnxHrnYeSvkzY7d2bhkJ7",
-                masterPrivateKey.ckd(BigInteger.ZERO, true, true)
+                masterPrivateKey.ckd(BigInteger.ZERO, true, true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw",
-                masterPrivateKey.ckd(BigInteger.ZERO, false, true)
+                masterPrivateKey.ckd(BigInteger.ZERO, false, true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprv9wTYmMFdV23N2TdNG573QoEsfRrWKQgWeibmLntzniatZvR9BmLnvSxqu53Kw1UmYPxLgboyZQaXwTCg8MSY3H2EU4pWcQDnRnrVA1xe8fs",
-                masterPrivateKey.ckd("0'/1", true)
+                masterPrivateKey.ckd("0'/1", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6ASuArnXKPbfEwhqN6e3mwBcDTgzisQN1wXN9BJcM47sSikHjJf3UFHKkNAWbWMiGj7Wf5uMash7SyYq527Hqck2AxYysAA7xmALppuCkwQ",
-                masterPrivateKey.ckd("0'/1", false)
+                masterPrivateKey.ckd("0'/1", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprv9z4pot5VBttmtdRTWfWQmoH1taj2axGVzFqSb8C9xaxKymcFzXBDptWmT7FwuEzG3ryjH4ktypQSAewRiNMjANTtpgP4mLTj34bhnZX7UiM",
-                masterPrivateKey.ckd("0'/1/2'", true)
+                masterPrivateKey.ckd("0'/1/2'", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6D4BDPcP2GT577Vvch3R8wDkScZWzQzMMUm3PWbmWvVJrZwQY4VUNgqFJPMM3No2dFDFGTsxxpG5uJh7n7epu4trkrX7x7DogT5Uv6fcLW5",
-                masterPrivateKey.ckd("0'/1/2'", false)
+                masterPrivateKey.ckd("0'/1/2'", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334",
-                masterPrivateKey.ckd("0'/1/2'/2", true)
+                masterPrivateKey.ckd("0'/1/2'/2", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6FHa3pjLCk84BayeJxFW2SP4XRrFd1JYnxeLeU8EqN3vDfZmbqBqaGJAyiLjTAwm6ZLRQUMv1ZACTj37sR62cfN7fe5JnJ7dh8zL4fiyLHV",
-                masterPrivateKey.ckd("0'/1/2'/2", false)
+                masterPrivateKey.ckd("0'/1/2'/2", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprvA41z7zogVVwxVSgdKUHDy1SKmdb533PjDz7J6N6mV6uS3ze1ai8FHa8kmHScGpWmj4WggLyQjgPie1rFSruoUihUZREPSL39UNdE3BBDu76",
-                masterPrivateKey.ckd("0'/1/2'/2/1000000000", true)
+                masterPrivateKey.ckd("0'/1/2'/2/1000000000", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6H1LXWLaKsWFhvm6RVpEL9P4KfRZSW7abD2ttkWP3SSQvnyA8FSVqNTEcYFgJS2UaFcxupHiYkro49S8yGasTvXEYBVPamhGW6cFJodrTHy",
-                masterPrivateKey.ckd("0'/1/2'/2/1000000000", false)
+                masterPrivateKey.ckd("0'/1/2'/2/1000000000", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             )
         );
     }
@@ -140,13 +142,15 @@ public class ExtendedKeyTest {
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()
+        );
         ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix()
+        );
         return Stream.of(
             Arguments.of(
                 "xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U",
@@ -158,43 +162,43 @@ public class ExtendedKeyTest {
             ),
             Arguments.of(
                 "xprv9vHkqa6EV4sPZHYqZznhT2NPtPCjKuDKGY38FBWLvgaDx45zo9WQRUT3dKYnjwih2yJD9mkrocEZXo1ex8G81dwSM1fwqWpWkeS3v86pgKt",
-                masterPrivateKey.ckd(BigInteger.ZERO, true, false)
+                masterPrivateKey.ckd(BigInteger.ZERO, true, false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH",
-                masterPrivateKey.ckd(BigInteger.ZERO, false, false)
+                masterPrivateKey.ckd(BigInteger.ZERO, false, false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprv9wSp6B7kry3Vj9m1zSnLvN3xH8RdsPP1Mh7fAaR7aRLcQMKTR2vidYEeEg2mUCTAwCd6vnxVrcjfy2kRgVsFawNzmjuHc2YmYRmagcEPdU9",
-                masterPrivateKey.ckd("0/2147483647'", true)
+                masterPrivateKey.ckd("0/2147483647'", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6ASAVgeehLbnwdqV6UKMHVzgqAG8Gr6riv3Fxxpj8ksbH9ebxaEyBLZ85ySDhKiLDBrQSARLq1uNRts8RuJiHjaDMBU4Zn9h8LZNnBC5y4a",
-                masterPrivateKey.ckd("0/2147483647'", false)
+                masterPrivateKey.ckd("0/2147483647'", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprv9zFnWC6h2cLgpmSA46vutJzBcfJ8yaJGg8cX1e5StJh45BBciYTRXSd25UEPVuesF9yog62tGAQtHjXajPPdbRCHuWS6T8XA2ECKADdw4Ef",
-                masterPrivateKey.ckd("0/2147483647'/1", true)
+                masterPrivateKey.ckd("0/2147483647'/1", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6DF8uhdarytz3FWdA8TvFSvvAh8dP3283MY7p2V4SeE2wyWmG5mg5EwVvmdMVCQcoNJxGoWaU9DCWh89LojfZ537wTfunKau47EL2dhHKon",
-                masterPrivateKey.ckd("0/2147483647'/1", false)
+                masterPrivateKey.ckd("0/2147483647'/1", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc",
-                masterPrivateKey.ckd("0/2147483647'/1/2147483646'", true)
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL",
-                masterPrivateKey.ckd("0/2147483647'/1/2147483646'", false)
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprvA2nrNbFZABcdryreWet9Ea4LvTJcGsqrMzxHx98MMrotbir7yrKCEXw7nadnHM8Dq38EGfSh6dqA9QWTyefMLEcBYJUuekgW4BYPJcr9E7j",
-                masterPrivateKey.ckd("0/2147483647'/1/2147483646'/2", true)
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'/2", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6FnCn6nSzZAw5Tw7cgR9bi15UV96gLZhjDstkXXxvCLsUXBGXPdSnLFbdpq8p9HmGsApME5hQTZ3emM2rnY5agb9rXpVGyy3bdW6EEgAtqt",
-                masterPrivateKey.ckd("0/2147483647'/1/2147483646'/2", false)
+                masterPrivateKey.ckd("0/2147483647'/1/2147483646'/2", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             )
         );
     }
@@ -206,13 +210,15 @@ public class ExtendedKeyTest {
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()
+        );
         ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix()
+        );
         return Stream.of(
             Arguments.of(
                 "xprv9s21ZrQH143K25QhxbucbDDuQ4naNntJRi4KUfWT7xo4EKsHt2QJDu7KXp1A3u7Bi1j8ph3EGsZ9Xvz9dGuVrtHHs7pXeTzjuxBrCmmhgC6",
@@ -224,11 +230,11 @@ public class ExtendedKeyTest {
             ),
             Arguments.of(
                 "xprv9uPDJpEQgRQfDcW7BkF7eTya6RPxXeJCqCJGHuCJ4GiRVLzkTXBAJMu2qaMWPrS7AANYqdq6vcBcBUdJCVVFceUvJFjaPdGZ2y9WACViL4L",
-                masterPrivateKey.ckd("0'", true)
+                masterPrivateKey.ckd("0'", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y",
-                masterPrivateKey.ckd("0'", false)
+                masterPrivateKey.ckd("0'", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             )
         );
     }
@@ -240,13 +246,15 @@ public class ExtendedKeyTest {
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()
+        );
         ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix()
+        );
         return Stream.of(
             Arguments.of(
                 "xprv9s21ZrQH143K48vGoLGRPxgo2JNkJ3J3fqkirQC2zVdk5Dgd5w14S7fRDyHH4dWNHUgkvsvNDCkvAwcSHNAQwhwgNMgZhLtQC63zxwhQmRv",
@@ -258,19 +266,19 @@ public class ExtendedKeyTest {
             ),
             Arguments.of(
                 "xprv9vB7xEWwNp9kh1wQRfCCQMnZUEG21LpbR9NPCNN1dwhiZkjjeGRnaALmPXCX7SgjFTiCTT6bXes17boXtjq3xLpcDjzEuGLQBM5ohqkao9G",
-                masterPrivateKey.ckd("0'", true)
+                masterPrivateKey.ckd("0'", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub69AUMk3qDBi3uW1sXgjCmVjJ2G6WQoYSnNHyzkmdCHEhSZ4tBok37xfFEqHd2AddP56Tqp4o56AePAgCjYdvpW2PU2jbUPFKsav5ut6Ch1m",
-                masterPrivateKey.ckd("0'", false)
+                masterPrivateKey.ckd("0'", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xprv9xJocDuwtYCMNAo3Zw76WENQeAS6WGXQ55RCy7tDJ8oALr4FWkuVoHJeHVAcAqiZLE7Je3vZJHxspZdFHfnBEjHqU5hG1Jaj32dVoS6XLT1",
-                masterPrivateKey.ckd("0'/1'", true)
+                masterPrivateKey.ckd("0'/1'", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "xpub6BJA1jSqiukeaesWfxe6sNK9CCGaujFFSJLomWHprUL9DePQ4JDkM5d88n49sMGJxrhpjazuXYWdMf17C9T5XnxkopaeS7jGk1GyyVziaMt",
-                masterPrivateKey.ckd("0'/1'", false)
+                masterPrivateKey.ckd("0'/1'", false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             )
         );
     }
@@ -282,7 +290,8 @@ public class ExtendedKeyTest {
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix()
+        );
         return Stream.of(
             Arguments.of(
                 "xpub661MyMwAqRbcEqsg3NugDbqxMH7xDg8jaYD5AL1T7JgQADPgvqDVSWZfuAzcG3PCTRc48VU5mMfRzY9KL469j5KVs3iAosht6HueU5CKYNh",
@@ -290,19 +299,19 @@ public class ExtendedKeyTest {
             ),
             Arguments.of(
                 "xpub68SSAVjmWkaMdA5HMd4aYszjo3H8Qy6URd69fBBcgCSFt1j8XGWudstUc8ULx8BZDkCnNVJcsbudGGzTnHEUdiYRTKE2G42EyoVDQrexD9G",
-                masterPubkey.ckd(BigInteger.ZERO, false, false)
+                masterPubkey.ckd(BigInteger.ZERO, false, false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xpub69qBbjK3W1MYD5Q2KP14t1i1Vn1tWmLzfwccrNV3Zz7e9cV4kU5P5nQGMbJYzyXpyWxciAb1bqRiEPS6C8yfYiouDxK2jB1FuadRh1RcV1J",
-                masterPubkey.ckd("0/1")
+                masterPubkey.ckd("0/1", ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xpub6CNQehfrZtL2UrDfB8dR9zZesBXdinqNgJhTWmhRf1Kdnm9KVgnn1rt9mWMXedjt4hMZrK9GVtKnap4w8PUXac77htBdvhqs6CxEHA8qiRu",
-                masterPubkey.ckd("0/1/2")
+                masterPubkey.ckd("0/1/2", ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "xpub6G4WGYbpiiraTi2yMb3Lrp2cw1uZ2KkKK1ENzGm8DzZVzHRgya62RyPNHpcHQV76eQeYv5aHiZkgZWR9gHAxBnFaFqhg3NKt3sXeajh63hD",
-                masterPubkey.ckd("0/2147483647/1/2147483646/2")
+                masterPubkey.ckd("0/2147483647/1/2147483646/2", ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             )
         );
     }
@@ -314,33 +323,35 @@ public class ExtendedKeyTest {
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()
+        );
         ExtendedPubkey masterPubkey = ExtendedPubkey.fromPrivate(
             HMacSha512.hash("Bitcoin seed", seed),
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPubkey.MAINNET_PUBLIC_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix()
+        );
         return Stream.of(
             Arguments.of(
                 "1m2u4uBf3cgUEJHVMqCpxuJQHA5wCqvZT",
-                masterPrivateKey.ckd(BigInteger.ZERO, true, false),
-                masterPubkey.ckd(BigInteger.ZERO, false, false)
+                masterPrivateKey.ckd(BigInteger.ZERO, true, false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix()),
+                masterPubkey.ckd(BigInteger.ZERO, false, false, ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "19uTRxHTTzCbWqRQZW4RqxgpJ7iwNPFPpg",
-                masterPrivateKey.ckd("0/1", true),
-                masterPubkey.ckd("0/1")
+                masterPrivateKey.ckd("0/1", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()),
+                masterPubkey.ckd("0/1", ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "188e4wxbaLpqQrLPKNGuCfPKUX2W83nCsw",
-                masterPrivateKey.ckd("0/1/2", true),
-                masterPubkey.ckd("0/1/2")
+                masterPrivateKey.ckd("0/1/2", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()),
+                masterPubkey.ckd("0/1/2", ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             ),
             Arguments.of(
                 "1DvGW5PGL9jg6q5fFFfmXCQFM41BuDF7rZ",
-                masterPrivateKey.ckd("0/2147483647/1/2147483646/2", true),
-                masterPubkey.ckd("0/2147483647/1/2147483646/2")
+                masterPrivateKey.ckd("0/2147483647/1/2147483646/2", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()),
+                masterPubkey.ckd("0/2147483647/1/2147483646/2", ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
             )
         );
     }
@@ -352,23 +363,24 @@ public class ExtendedKeyTest {
             0,
             "00000000",
             BigInteger.ZERO,
-            ExtendedPrivateKey.MAINNET_PRIVATE_PREFIX);
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()
+        );
         return Stream.of(
             Arguments.of(
                 "bc1qrs4f2jy2h2z4tul0r5pyd3hr6g5wl5ah6xufj6",
-                masterPrivateKey.ckd("84'/0'/0'/0/0", true)
+                masterPrivateKey.ckd("84'/0'/0'/0/0", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "bc1qt2n6s4yxzpqrn4n7mmvafh86xkqed7a7vpjpun",
-                masterPrivateKey.ckd("84'/0'/0'/0/1", true)
+                masterPrivateKey.ckd("84'/0'/0'/0/1", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "bc1qc7d9njfaeawekrjz93ysfle7faay09ngtv2x24",
-                masterPrivateKey.ckd("84'/0'/0'/0/2", true)
+                masterPrivateKey.ckd("84'/0'/0'/0/2", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
             ),
             Arguments.of(
                 "bc1q9pv8jf53z732rgpkkng7ggfk0v3r48nymuyxr9",
-                masterPrivateKey.ckd("84'/0'/0'/0/3", true)
+                masterPrivateKey.ckd("84'/0'/0'/0/3", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
             )
         );
     }
