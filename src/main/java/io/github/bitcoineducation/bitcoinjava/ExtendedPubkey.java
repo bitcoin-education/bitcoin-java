@@ -127,6 +127,10 @@ public class ExtendedPubkey implements ExtendedKey {
         );
     }
 
+    public ExtendedKey ckd(String derivationPath) {
+        return ckd(derivationPath, prefix);
+    }
+
     public ExtendedKey ckd(String derivationPath, String prefix) {
         String[] indexes = derivationPath.split("/");
         ExtendedKey extendedKey = this;
