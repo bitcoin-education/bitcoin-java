@@ -14,6 +14,13 @@ import static java.math.BigInteger.*;
 
 public class Script {
 
+    public static final String UNKNOWN = "UNKNOWN";
+    public static final String P2PKH = "P2PKH";
+    public static final String P2SH = "P2SH";
+    public static final String P2WPKH = "P2WPKH";
+    public static final String P2WSH = "P2WSH";
+    public static final String P2TR = "P2TR";
+
     private final List<Object> commands;
 
     public Script(List<Object> commands) {
@@ -132,11 +139,82 @@ public class Script {
         return new Script(List.of(valueOf(OpCodes.OP_1), outputKey));
     }
 
+    public static Script p2wshScript(String sha256) {
+        return new Script(List.of(valueOf(OpCodes.OP_0), sha256));
+    }
+
     public static Script p2shScript(String hash160) {
         return new Script(Arrays.asList(valueOf(OpCodes.OP_HASH160), hash160, valueOf(OpCodes.OP_EQUAL)));
     }
 
     public void appendCommand(Object command) {
         commands.add(command);
+    }
+
+    public String getType() {
+        String rawSerialized = rawSerialize();
+        BigInteger length = valueOf(rawSerialized.length()).divide(BigInteger.TWO);
+
+        switch (length.intValueExact()) {
+            case 25 -> {
+                if (isP2PKH()) {
+                    return P2PKH;
+                }
+                return UNKNOWN;
+            }
+            case 23 -> {
+                if (isP2SH()) {
+                    return P2SH;
+                }
+                return UNKNOWN;
+            }
+            case 22 -> {
+                if (isP2WPKH()) {
+                    return P2WPKH;
+                }
+                return UNKNOWN;
+            }
+            case 34 -> {
+                if (isP2WSH()) {
+                    return P2WSH;
+                }
+                if (isP2TR()) {
+                    return P2TR;
+                }
+                return UNKNOWN;
+            }
+            default -> {
+                return UNKNOWN;
+            }
+        }
+    }
+
+    private boolean isP2TR() {
+        return commands.get(0).equals(valueOf(OpCodes.OP_1)) &&
+            ((String)commands.get(1)).length() == 64;
+    }
+
+    private boolean isP2WSH() {
+        return commands.get(0).equals(valueOf(OpCodes.OP_0)) &&
+            ((String)commands.get(1)).length() == 64;
+    }
+
+    private boolean isP2WPKH() {
+        return commands.get(0).equals(valueOf(OpCodes.OP_0)) &&
+            ((String)commands.get(1)).length() == 40;
+    }
+
+    private boolean isP2SH() {
+        return commands.get(0).equals(valueOf(OpCodes.OP_HASH160)) &&
+            ((String)commands.get(1)).length() == 40 &&
+            commands.get(2).equals(valueOf(OpCodes.OP_EQUAL));
+    }
+
+    private boolean isP2PKH() {
+        return commands.get(0).equals(valueOf(OpCodes.OP_DUP)) &&
+            commands.get(1).equals(valueOf(OpCodes.OP_HASH160)) &&
+            ((String)commands.get(2)).length() == 40 &&
+            commands.get(3).equals(valueOf(OpCodes.OP_EQUALVERIFY)) &&
+            commands.get(4).equals(valueOf(OpCodes.OP_CHECKSIG));
     }
 }
