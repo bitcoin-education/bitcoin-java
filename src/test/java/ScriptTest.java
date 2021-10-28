@@ -51,13 +51,19 @@ public class ScriptTest {
     @Test
     public void p2shP2wpkhAddress() {
         PrivateKey privateKey = PrivateKey.fromWif("L46JDUzM92EhyG3eeTbczaDzph1S6yANmRDeBKVaWa2vH1h77z4e", true);
-        String address = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey())).p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX);
+        Script script = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey()));
+        String address = script.p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX);
+        assertEquals(script.getType(), Script.P2WPKH);
         assertEquals("3Ko5pX4ZcqtCXPqJB1FsC821SWt3C4Msoo", address);
+        String h160 = Base58.decodeWithChecksumToHex(address);
+        Script script2 = Script.p2shScript(h160);
+        assertEquals(script2.getType(), Script.P2SH);
     }
 
     @Test
     public void p2wpkhScript() {
         Script script = Script.p2wpkhScript("751e76e8199196d454941c45d1b3a323f1433bd6");
+        assertEquals(script.getType(), Script.P2WPKH);
         assertEquals("0014751e76e8199196d454941c45d1b3a323f1433bd6", script.rawSerialize());
     }
 
@@ -66,6 +72,7 @@ public class ScriptTest {
         String address = "3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC";
         String h160 = Base58.decodeWithChecksumToHex(address);
         Script script = Script.p2shScript(h160);
+        assertEquals(script.getType(), Script.P2SH);
         assertEquals("a914f815b036d9bbbce5e9f2a00abd1bf3dc91e9551087", script.rawSerialize());
     }
 
@@ -88,7 +95,21 @@ public class ScriptTest {
             "0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798",
             valueOf(OP_CHECKSIG)
         ));
+        Script script = Script.p2wshScript(Sha256.hashToHex(redeemScript.rawSerialize()));
+        assertEquals(script.getType(), Script.P2WSH);
         assertEquals("bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3", redeemScript.p2wshAddress(AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX));
+    }
+
+    @Test
+    public void p2trScript() {
+        Script script = Script.p2trScript(Bech32.decode("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k")[1]);
+        assertEquals(script.getType(), Script.P2TR);
+    }
+
+    @Test
+    public void p2pkhScript() {
+        Script script = Script.p2pkhScript(Base58.decodeWithChecksumToHex("1GtpSrGhRGY5kkrNz4RykoqRQoJuG2L6DS"));
+        assertEquals(script.getType(), Script.P2PKH);
     }
 
     @Test
