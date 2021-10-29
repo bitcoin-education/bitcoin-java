@@ -116,6 +116,18 @@ public class Script {
         return commands;
     }
 
+    public String p2pkhAddress(String prefix) {
+        return Base58.encodeWithChecksumFromHex(prefix.concat((String) commands.get(2)));
+    }
+
+    public String p2wpkhAddress(String prefix) {
+        return Bech32.encode(prefix, 0, Hex.decodeStrict((String) commands.get(1)));
+    }
+
+    public String p2trAddress(String prefix) {
+        return Bech32.encode(prefix, 1, Hex.decodeStrict((String) commands.get(1)));
+    }
+
     public String p2shAddress(String prefix) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.writeBytes(Hex.decodeStrict(prefix));

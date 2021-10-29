@@ -92,4 +92,8 @@ public class Base58 {
     public static String encodeFromHex(String key) {
         return encode(Hex.decodeStrict(key));
     }
+
+    public static String encodeWithChecksumFromHex(String key) {
+        return encodeWithChecksum(Hex.decodeStrict(key));
+    }
 }
