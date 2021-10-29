@@ -2,11 +2,15 @@ import io.github.bitcoineducation.bitcoinjava.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Security;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static io.github.bitcoineducation.bitcoinjava.OpCodes.*;
 import static java.math.BigInteger.valueOf;
@@ -107,12 +111,6 @@ public class ScriptTest {
     }
 
     @Test
-    public void p2pkhScript() {
-        Script script = Script.p2pkhScript(Base58.decodeWithChecksumToHex("1GtpSrGhRGY5kkrNz4RykoqRQoJuG2L6DS"));
-        assertEquals(script.getType(), Script.P2PKH);
-    }
-
-    @Test
     public void p2wshScript2() {
         Script redeemScript = new Script(List.of(
             "0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798",
@@ -120,4 +118,61 @@ public class ScriptTest {
         ));
         assertEquals("tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7", redeemScript.p2wshAddress(AddressConstants.TESTNET_P2WPKH_ADDRESS_PREFIX));
     }
+
+    @ParameterizedTest
+    @MethodSource("p2wpkhAddressParameters")
+    public void p2wpkhAddress(String address, String prefix) {
+        Script script = Script.p2wpkhScript(Bech32.decode(prefix, address)[1]);
+        assertEquals(script.p2wpkhAddress(prefix), address);
+    }
+
+    @ParameterizedTest
+    @MethodSource("p2trAddressParameters")
+    public void p2trAddress(String address, String prefix) {
+        Script script = Script.p2trScript(Bech32.decode(prefix, address)[1]);
+        assertEquals(script.p2trAddress(prefix), address);
+    }
+
+    @ParameterizedTest
+    @MethodSource("p2pkhScriptParameters")
+    public void p2pkhScript(String address, String prefix) {
+        Script script = Script.p2pkhScript(Base58.decodeWithChecksumToHex(address));
+        assertEquals(script.getType(), Script.P2PKH);
+        assertEquals(script.p2pkhAddress(prefix), address);
+    }
+
+    public static Stream<Arguments> p2trAddressParameters() {
+        return Stream.of(
+            Arguments.of("tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k", AddressConstants.TESTNET_P2WPKH_ADDRESS_PREFIX),
+            Arguments.of("bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr", AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX),
+            Arguments.of("bc1p4qhjn9zdvkux4e44uhx8tc55attvtyu358kutcqkudyccelu0was9fqzwh", AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX),
+            Arguments.of("bc1p3qkhfews2uk44qtvauqyr2ttdsw7svhkl9nkm9s9c3x4ax5h60wqwruhk7", AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX)
+        );
+    }
+
+    public static Stream<Arguments> p2wpkhAddressParameters() {
+        return Stream.of(
+            Arguments.of("tb1q63rv8027mnhszkmf0f5qkxhk48r9tcyk0n6m8l", AddressConstants.TESTNET_P2WPKH_ADDRESS_PREFIX),
+            Arguments.of("bcrt1qq5p8alfstj5fwqaj89xr0ssaadcmg6px98hsq5", AddressConstants.REGTEST_P2WPKH_ADDRESS_PREFIX),
+            Arguments.of("bc1q3qau48a0gs3yya4fd5pm2qqm88rzh7j83ypcs9", AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX),
+            Arguments.of("bc1qlm2ukja7p7u6yjdphanj34dekd6p4f24vap4f9", AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX),
+            Arguments.of("bc1qjgl6gkfdkte0556v6sgwnunrnr54p39msm38na", AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX)
+        );
+    }
+
+    public static Stream<Arguments> p2pkhScriptParameters() {
+        return Stream.of(
+            Arguments.of("1GtpSrGhRGY5kkrNz4RykoqRQoJuG2L6DS", AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("1osGyLLcLGuLmadLy2vZ7y5ZkaefxoEMu", AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("1FNSrAooN1cN85rXBAsHak5JxXgZPsNAXs", AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("19RXAAj2WFyBXbVWcoGUANn3SWma61DGVW", AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("1Dx9NMqtbpoaZvJRWmX1Ej9cK1GVoubyed", AddressConstants.MAINNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("moQMmyts9f3u3Th1zdQVvvK3GWKpNSQeaM", AddressConstants.TESTNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("mzUce6b1PmmSKqNWZfgkMpj3rnZ4rrsP9v", AddressConstants.TESTNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("mux4bhrfGMDrvdLeSqSpVy6tpCG9GDqPMN", AddressConstants.TESTNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("mzNdm9Caku7C8MvTMXhu4DCtVm27LBwhAA", AddressConstants.TESTNET_P2PKH_ADDRESS_PREFIX),
+            Arguments.of("mj71KbiTptpzRXBVJknYKaAG8Z5Nxx63Df", AddressConstants.TESTNET_P2PKH_ADDRESS_PREFIX)
+        );
+    }
+
 }
