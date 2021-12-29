@@ -63,7 +63,7 @@ jobs:
     #- name: Autobuild
     #  uses: github/codeql-action/autobuild@v1
     - name: Build with Maven
-      run: mvn --batch-mode --update-snapshots verify
+      run: mvn --batch-mode --update-snapshots package
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
