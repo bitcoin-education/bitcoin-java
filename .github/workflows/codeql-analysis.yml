@@ -18,7 +18,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ main ]
   schedule:
-    - cron: '36 14 * * 6'
+    - cron: '15 12 * * 4'
 
 jobs:
   analyze:
@@ -39,6 +39,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+    
+    - name: Setup Java JDK
+      uses: actions/setup-java@v2.5.0
+      with:
+        # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
+        java-version: '14'
+        # Java distribution. See the list of supported distributions in README file
+        distribution: 'adopt-openj9'
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
