@@ -8,7 +8,7 @@ Add the following dependency to your pom.xml:
 <dependency>
     <groupId>io.github.bitcoin-education</groupId>
     <artifactId>bitcoin-java</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
 </dependency>
 ```
 
@@ -30,7 +30,7 @@ Add the following plugin goal:
                             <artifactItem>
                                 <groupId>io.github.bitcoin-education</groupId>
                                 <artifactId>bitcoin-java</artifactId>
-                                <version>0.4.0</version>
+                                <version>0.4.1</version>
                                 <overWrite>true</overWrite>
                                 <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                 <destFileName>wordlist.txt</destFileName>
