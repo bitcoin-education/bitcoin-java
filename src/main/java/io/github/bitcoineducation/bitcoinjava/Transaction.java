@@ -331,4 +331,20 @@ public class Transaction {
         return Hex.toHexString(marker).equals(SEGWIT_MARKER);
     }
 
+    public int getVSize() throws IOException {
+        int witnessLength = 0;
+        if (segwit) {
+            witnessLength = getWitnessLength();
+        }
+        int nonWitnessLength = (serialize().length() / 2) - witnessLength;
+        int weight = nonWitnessLength * 4 + witnessLength;
+        return (weight + 3) / 4;
+    }
+
+    private int getWitnessLength() {
+        return 2 + inputs.stream()
+            .map(transactionInput -> transactionInput.getWitness().serialize().length() / 2)
+            .reduce(Integer::sum)
+            .orElse(0);
+    }
 }
