@@ -67,6 +67,12 @@ public class ExtendedKeyTest {
         assertEquals(expectedAddress, extendedPrivateKey.toPublicKey().segwitAddressFromCompressedPublicKey(AddressConstants.MAINNET_P2WPKH_ADDRESS_PREFIX));
     }
 
+    @ParameterizedTest
+    @MethodSource("nestedSegwitAddressFromPrivateKeyParameters")
+    public void nestedSegwitAddressFromPrivateKey(String expectedAddress, ExtendedKey extendedPrivateKey) {
+        assertEquals(expectedAddress, extendedPrivateKey.toPublicKey().nestedSegwitAddressFromCompressedPublicKey(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX));
+    }
+
     private static Stream<Arguments> vector1Parameters() {
         byte[] seed = Hex.decode("000102030405060708090a0b0c0d0e0f");
         ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
@@ -352,6 +358,35 @@ public class ExtendedKeyTest {
                 "1DvGW5PGL9jg6q5fFFfmXCQFM41BuDF7rZ",
                 masterPrivateKey.ckd("0/2147483647/1/2147483646/2", true, ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()),
                 masterPubkey.ckd("0/2147483647/1/2147483646/2", ExtendedKeyPrefixes.MAINNET_PREFIX.getPublicPrefix())
+            )
+        );
+    }
+
+    private static Stream<Arguments> nestedSegwitAddressFromPrivateKeyParameters() {
+        byte[] seed = Hex.decode("d56f3083ddf293d8143d5d06b1bd55c72c3636d8c36c8d35abfa1358adb08c95df10a29e104d36e118ec7d024e491105a927296e152c9fe14464fa5db3a4d659");
+        ExtendedPrivateKey masterPrivateKey = ExtendedPrivateKey.from(
+            HMacSha512.hash("Bitcoin seed", seed),
+            0,
+            "00000000",
+            BigInteger.ZERO,
+            ExtendedKeyPrefixes.MAINNET_PREFIX.getPrivatePrefix()
+        );
+        return Stream.of(
+            Arguments.of(
+                "3G45ifdXfUzqFd8oZ8qYkUAaSvGGKABMKK",
+                masterPrivateKey.ckd("49'/0'/0'/0/0", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
+            ),
+            Arguments.of(
+                "3GkoM3hQQvnw6UabnP1XB9EGbQgN2bw6Vi",
+                masterPrivateKey.ckd("49'/0'/0'/0/1", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
+            ),
+            Arguments.of(
+                "37mqTVhWW1aH4H28SnQyTDtdD8fotcjQFR",
+                masterPrivateKey.ckd("49'/0'/0'/0/2", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
+            ),
+            Arguments.of(
+                "3QvJTExjH7koh6hbhsU942LpQevLgp2xCf",
+                masterPrivateKey.ckd("49'/0'/0'/0/3", true, ExtendedKeyPrefixes.MAINNET_SEGWIT_PREFIX.getPrivatePrefix())
             )
         );
     }

@@ -45,7 +45,7 @@ public class TwoOfTwoMultisigP2SHInputExampleTransaction {
         transactionInputArrayList.add(transactionInput0);
 
         BigInteger amount = BigInteger.valueOf(48_000);
-        TransactionOutput transactionOutput = new TransactionOutput(amount, Script.p2wpkhScript(Bech32.decode("tb", "tb1q63rv8027mnhszkmf0f5qkxhk48r9tcyk0n6m8l")[1]));
+        TransactionOutput transactionOutput = new TransactionOutput(amount, Script.p2wpkhScript(Bech32.decodeToHex("tb", "tb1q63rv8027mnhszkmf0f5qkxhk48r9tcyk0n6m8l")));
         System.out.println("output 0 address: " + "tb1q63rv8027mnhszkmf0f5qkxhk48r9tcyk0n6m8l");
         System.out.println("output 0 amount: " + "48,000 satoshis");
 

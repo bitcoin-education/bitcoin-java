@@ -52,7 +52,7 @@ public class MixedInputsP2PKH_P2WPKHExampleTransaction {
         transactionInputArrayList.add(transactionInput1);
 
         BigInteger amount = BigInteger.valueOf(70_000);
-        TransactionOutput transactionOutput = new TransactionOutput(amount, Script.p2wpkhScript(Bech32.decode("tb", "tb1qwe4smkkxcz84m82xvq78k6y9n8jl8kddxjjg35")[1]));
+        TransactionOutput transactionOutput = new TransactionOutput(amount, Script.p2wpkhScript(Bech32.decodeToHex("tb", "tb1qwe4smkkxcz84m82xvq78k6y9n8jl8kddxjjg35")));
         System.out.println("output 0 address: " + "tb1qwe4smkkxcz84m82xvq78k6y9n8jl8kddxjjg35");
         System.out.println("output 0 amount: " + "70,000 satoshis");
 

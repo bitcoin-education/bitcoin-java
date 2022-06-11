@@ -16,7 +16,7 @@ public class OneNestedSegwitInputExampleTransaction {
         String secret = "dee42df9945848a98209557e7222d018";
         System.out.println("private key for p2sh-p2wpkh input: " + secret);
         PrivateKey privateKey = new PrivateKey(new BigInteger(1, Hex.decode(secret)));
-        String address = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey())).p2shAddress(AddressConstants.TESTNET_P2SH_ADDRESS_PREFIX);
+        String address = privateKey.getPublicKey().nestedSegwitAddressFromCompressedPublicKey(AddressConstants.TESTNET_P2SH_ADDRESS_PREFIX);
         System.out.println("address for p2sh-p2wpkh: " + address);
 
         Script redeemScript = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey()));

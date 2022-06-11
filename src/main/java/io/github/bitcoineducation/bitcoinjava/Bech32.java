@@ -90,6 +90,10 @@ public class Bech32 {
         return stringBuilder.toString();
     }
 
+    public static String decodeToHex(String hrp, String address) {
+        return decode(hrp, address)[1];
+    }
+
     public static String[] decode(String hrp, String address) {
         Object[] hrpAddress = bech32Decode(address);
         String hrpGot = (String) hrpAddress[0];

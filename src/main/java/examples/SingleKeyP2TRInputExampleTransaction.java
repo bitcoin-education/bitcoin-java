@@ -37,7 +37,7 @@ public class SingleKeyP2TRInputExampleTransaction {
         transactionInputArrayList.add(transactionInput1);
 
         BigInteger amount = BigInteger.valueOf(4_000);
-        Script script = Script.p2trScript(Bech32.decode("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k")[1]);
+        Script script = Script.p2trScript(Bech32.decodeToHex("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k"));
         TransactionOutput transactionOutput = new TransactionOutput(amount, script);
         System.out.println("output 0 address: " + "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k");
         System.out.println("output 0 amount: " + "4,000 satoshis");
