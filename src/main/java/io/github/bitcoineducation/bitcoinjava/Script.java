@@ -135,6 +135,10 @@ public class Script {
         return Base58.encodeWithChecksum(byteArrayOutputStream.toByteArray());
     }
 
+    public String nestedSegwitAddress(String prefix) {
+        return Base58.encodeWithChecksumFromHex(prefix.concat((String) commands.get(1)));
+    }
+
     public String p2wshAddress(String prefix) {
         return Bech32.encode(prefix, 0, Sha256.hash(Hex.decode(rawSerialize())));
     }

@@ -30,7 +30,7 @@ public class OneP2PKHInputExampleTransaction {
         transactionInputArrayList.add(transactionInput);
 
         BigInteger amount = BigInteger.valueOf(90_000);
-        TransactionOutput transactionOutput = new TransactionOutput(amount, Script.p2wpkhScript(Bech32.decode("tb", "tb1q63rv8027mnhszkmf0f5qkxhk48r9tcyk0n6m8l")[1]));
+        TransactionOutput transactionOutput = new TransactionOutput(amount, Script.p2wpkhScript(Bech32.decodeToHex("tb", "tb1q63rv8027mnhszkmf0f5qkxhk48r9tcyk0n6m8l")));
         System.out.println("output 0 address: " + "tb1q63rv8027mnhszkmf0f5qkxhk48r9tcyk0n6m8l");
         System.out.println("output 0 amount: " + "90,000 satoshis");
 

@@ -94,6 +94,10 @@ public class PublicKey {
         return Bech32.encode(prefix, 0, hash160);
     }
 
+    public String nestedSegwitAddressFromCompressedPublicKey(String prefix) {
+        return Script.p2wpkhScript(Hash160.hashToHex(compressedPublicKey)).p2shAddress(prefix);
+    }
+
     public String taprootAddress(String prefix) {
         return Bech32.encode(prefix, 1, point.getAffineXCoord().getEncoded());
     }

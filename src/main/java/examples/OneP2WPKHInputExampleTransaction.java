@@ -33,12 +33,12 @@ public class OneP2WPKHInputExampleTransaction {
         transactionInputArrayList.add(transactionInput1);
 
         BigInteger amount = BigInteger.valueOf(5_000);
-        Script script = Script.p2trScript(Bech32.decode("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k")[1]);
+        Script script = Script.p2trScript(Bech32.decodeToHex("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k"));
         TransactionOutput transactionOutput= new TransactionOutput(amount, script);
         System.out.println("output 0 address: " + "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k");
         System.out.println("output 0 amount: " + "5.000 satoshis");
 
-        TransactionOutput transactionOutputChange = new TransactionOutput(BigInteger.valueOf(94_000), Script.p2wpkhScript(Bech32.decode("tb", address)[1]));
+        TransactionOutput transactionOutputChange = new TransactionOutput(BigInteger.valueOf(94_000), Script.p2wpkhScript(Bech32.decodeToHex("tb", address)));
         System.out.println("output 1 address: " + address);
         System.out.println("output 1 amount: " + "94.000 satoshis");
 

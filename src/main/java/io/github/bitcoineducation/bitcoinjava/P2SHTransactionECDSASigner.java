@@ -21,7 +21,7 @@ public class P2SHTransactionECDSASigner {
         String derSignature = ECSigner.sign(privateKey, Hex.decode(sigHash)).derHex();
         String signature = derSignature.concat(Hex.toHexString(SigHashTypes.SIGHASH_ALL.toByteArray()));
         transaction.getInputs().get(index).setWitness(new Witness(List.of(signature, privateKey.getPublicKey().compressedPublicKeyHex())));
-        transaction.getInputs().get(index).getScriptSig().appendCommand(redeemScript.rawSerialize());
+        transaction.getInputs().get(index).setScriptSig(new Script(List.of(redeemScript.rawSerialize())));
     }
 
     public static void appendRedeemScript(Transaction transaction, int index, Script redeemScript) {

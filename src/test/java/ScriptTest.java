@@ -56,12 +56,13 @@ public class ScriptTest {
     public void p2shP2wpkhAddress() {
         PrivateKey privateKey = PrivateKey.fromWif("L46JDUzM92EhyG3eeTbczaDzph1S6yANmRDeBKVaWa2vH1h77z4e", true);
         Script script = Script.p2wpkhScript(Hash160.hashToHex(privateKey.getPublicKey().getCompressedPublicKey()));
-        String address = script.p2shAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX);
+        String address = privateKey.getPublicKey().nestedSegwitAddressFromCompressedPublicKey(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX);
         assertEquals(script.getType(), Script.P2WPKH);
         assertEquals("3Ko5pX4ZcqtCXPqJB1FsC821SWt3C4Msoo", address);
         String h160 = Base58.decodeWithChecksumToHex(address);
         Script script2 = Script.p2shScript(h160);
         assertEquals(script2.getType(), Script.P2SH);
+        assertEquals("3Ko5pX4ZcqtCXPqJB1FsC821SWt3C4Msoo", script2.nestedSegwitAddress(AddressConstants.MAINNET_P2SH_ADDRESS_PREFIX));
     }
 
     @Test
@@ -106,7 +107,7 @@ public class ScriptTest {
 
     @Test
     public void p2trScript() {
-        Script script = Script.p2trScript(Bech32.decode("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k")[1]);
+        Script script = Script.p2trScript(Bech32.decodeToHex("tb", "tb1psmxksw0jx8eu5ds5yphsszyjagw5ug2ce2z35j0mk8ytkunh3f2sugn56k"));
         assertEquals(script.getType(), Script.P2TR);
     }
 
@@ -122,14 +123,14 @@ public class ScriptTest {
     @ParameterizedTest
     @MethodSource("p2wpkhAddressParameters")
     public void p2wpkhAddress(String address, String prefix) {
-        Script script = Script.p2wpkhScript(Bech32.decode(prefix, address)[1]);
+        Script script = Script.p2wpkhScript(Bech32.decodeToHex(prefix, address));
         assertEquals(script.p2wpkhAddress(prefix), address);
     }
 
     @ParameterizedTest
     @MethodSource("p2trAddressParameters")
     public void p2trAddress(String address, String prefix) {
-        Script script = Script.p2trScript(Bech32.decode(prefix, address)[1]);
+        Script script = Script.p2trScript(Bech32.decodeToHex(prefix, address));
         assertEquals(script.p2trAddress(prefix), address);
     }
 
