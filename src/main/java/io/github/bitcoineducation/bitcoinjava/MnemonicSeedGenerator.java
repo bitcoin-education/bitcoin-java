@@ -33,7 +33,7 @@ public class MnemonicSeedGenerator {
 
     private static List<String> loadWordlist() {
         InputStream inputStream = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResourceAsStream("wordlist.txt"));
-        return new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.toList());
+        return new BufferedReader(new InputStreamReader(inputStream, Charset.defaultCharset())).lines().collect(Collectors.toList());
     }
 
     public static void check(MnemonicSeed mnemonicSeed) {
