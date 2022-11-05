@@ -3,6 +3,7 @@ package io.github.bitcoineducation.bitcoinjava;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Objects;
