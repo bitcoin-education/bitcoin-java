@@ -7,16 +7,10 @@ import org.bouncycastle.crypto.util.DigestFactory;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -56,18 +50,8 @@ public class MnemonicSeed {
     }
 
     public byte[] toEntropy() {
-        URI path = null;
-        try {
-            path = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResource("wordlist.txt")).toURI();
-        } catch (URISyntaxException e) {
-            throw new NoSuchElementException("Could not load wordlist.");
-        }
-        List<String> wordlist = null;
-        try {
-            wordlist = Files.readAllLines(Path.of(path));
-        } catch (IOException e) {
-            throw new NoSuchElementException("Could not load wordlist.");
-        }
+        InputStream inputStream = Objects.requireNonNull(MnemonicSeedGenerator.class.getClassLoader().getResourceAsStream("wordlist.txt"));
+        List<String> wordlist = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.toList());
 
         String[] mnemonicSeedList = sentence.split(" ");
 

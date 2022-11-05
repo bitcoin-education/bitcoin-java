@@ -6,7 +6,7 @@
 
     <groupId>io.github.bitcoin-education</groupId>
     <artifactId>bitcoin-java</artifactId>
-    <version>0.4.4</version>
+    <version>0.4.5</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A Bitcoin library written in Java</description>
     <url>https://github.com/bitcoin-education/bitcoin-java</url>

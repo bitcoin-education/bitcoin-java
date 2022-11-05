@@ -6,8 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -16,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MnemonicSeedGeneratorTest {
     @ParameterizedTest
     @MethodSource("mnemonicParameters")
-    public void mnemonic(String entropy, String mnemonicSeed, String seed, String xpriv) throws IOException, URISyntaxException {
+    public void mnemonic(String entropy, String mnemonicSeed, String seed, String xpriv) {
         byte[] entropyDecoded = Hex.decode(entropy);
         MnemonicSeed mnemonic = MnemonicSeedGenerator.fromEntropy(entropyDecoded);
         assertEquals(mnemonicSeed, mnemonic.getSentence());
@@ -28,7 +26,7 @@ public class MnemonicSeedGeneratorTest {
 
     @ParameterizedTest
     @MethodSource("generateRandomParameters")
-    public void generateRandom(int bits, int expectedLength) throws IOException, URISyntaxException {
+    public void generateRandom(int bits, int expectedLength) {
         MnemonicSeed mnemonicSeed = MnemonicSeedGenerator.generateRandom(bits);
         assertEquals(expectedLength, mnemonicSeed.getSentence().split(" ").length);
     }
